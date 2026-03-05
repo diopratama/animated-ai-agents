@@ -1,0 +1,16 @@
+services:
+  agent-bridge:
+    image: ghcr.io/${GHCR_IMAGE:-diopratama/animated-ai-agents}:latest
+    container_name: animated-ai-agents-bridge
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - PROJECT_ROOT=/app
+      - GEMINI_CMD=gemini
+      - GEMINI_BOOT_ARGS=
+      - GEMINI_AUTH_MODE=${GEMINI_AUTH_MODE:-google_login}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ${GEMINI_HOME_DIR:-/data/gemini/home}:/root/.gemini:rw

@@ -1,0 +1,18 @@
+services:
+  agent-bridge:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: animated-ai-agents-bridge-local
+    ports:
+      - "3003:3003"
+    environment:
+      - PORT=3003
+      - PROJECT_ROOT=/workspace/animated-ai-agents
+      - GEMINI_CMD=gemini
+      - GEMINI_BOOT_ARGS=
+      - GEMINI_AUTH_MODE=${GEMINI_AUTH_MODE:-google_login}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./:/workspace/animated-ai-agents
+      - ${HOME}/.gemini:/root/.gemini:rw
