@@ -27,6 +27,8 @@ const AGENT_DEFS = {
   be: { name: "Backend Dev", roleFile: "agents/backend-dev.md" },
   fe: { name: "Frontend Dev", roleFile: "agents/frontend-dev.md" },
   qa: { name: "QA Engineer", roleFile: "agents/qa-agent.md" },
+  devops: { name: "DevOps Engineer", roleFile: "agents/devops-engineer.md" },
+  sec: { name: "Security Engineer", roleFile: "agents/security-engineer.md" },
 };
 
 const app = express();

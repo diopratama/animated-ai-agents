@@ -28,6 +28,8 @@
             --blue: #4facfe;
             --purple: #a29bfe;
             --orange: #fd9644;
+            --cyan: #00cec9;
+            --red: #e74c3c;
             --text: #e8e8ff;
             --muted: #6b6b9a;
         }
@@ -409,6 +411,14 @@
             color: var(--green);
         }
 
+        .tag-devops {
+            color: var(--cyan);
+        }
+
+        .tag-sec {
+            color: var(--red);
+        }
+
         .tag-sys {
             color: var(--muted);
         }
@@ -597,6 +607,389 @@
             opacity: .75;
         }
 
+        /* ── Monitoring Dashboard ── */
+        .dashboard-wrap {
+            width: 100%;
+            max-width: 920px;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dash-section {
+            background: var(--panel);
+            border: 1px solid var(--panel-border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .dash-section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--panel-border);
+            cursor: pointer;
+            user-select: none;
+            transition: background .15s;
+        }
+
+        .dash-section-header:hover {
+            background: rgba(108, 99, 255, .06);
+        }
+
+        .dash-section-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 7px;
+            color: var(--accent);
+            letter-spacing: .5px;
+        }
+
+        .dash-section-toggle {
+            font-size: 10px;
+            color: var(--muted);
+            transition: transform .2s;
+        }
+
+        .dash-section-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .dash-section-body {
+            padding: 12px 14px;
+        }
+
+        .dash-section-body.collapsed {
+            display: none;
+        }
+
+        .pipeline-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .pipeline-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .pipeline-stat .val {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .pipeline-status-badge {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 7px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            letter-spacing: .5px;
+        }
+
+        .pipeline-status-badge.idle {
+            background: rgba(107, 107, 154, .2);
+            color: var(--muted);
+        }
+
+        .pipeline-status-badge.running {
+            background: rgba(249, 202, 36, .15);
+            color: var(--yellow);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .pipeline-status-badge.complete {
+            background: rgba(67, 233, 123, .15);
+            color: var(--green);
+        }
+
+        .pipeline-progress-track {
+            flex: 1;
+            min-width: 100px;
+            height: 6px;
+            background: var(--darker);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .pipeline-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--green));
+            border-radius: 3px;
+            transition: width .4s ease;
+            width: 0%;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+            gap: 8px;
+        }
+
+        .mini-card {
+            background: var(--darker);
+            border: 1px solid var(--panel-border);
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: border-color .3s;
+        }
+
+        .mini-card.mc-working {
+            border-color: var(--yellow);
+            box-shadow: 0 0 8px rgba(249, 202, 36, .15);
+        }
+
+        .mini-card.mc-done {
+            border-color: var(--green);
+        }
+
+        .mini-card.mc-error {
+            border-color: var(--red);
+        }
+
+        .mc-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .mc-name {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 6px;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mc-badge {
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .mc-badge.b-idle { background: rgba(107,107,154,.2); color: var(--muted); }
+        .mc-badge.b-working { background: rgba(249,202,36,.15); color: var(--yellow); }
+        .mc-badge.b-done { background: rgba(67,233,123,.15); color: var(--green); }
+        .mc-badge.b-error { background: rgba(231,76,60,.15); color: var(--red); }
+
+        .mc-stats {
+            display: flex;
+            gap: 10px;
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        .mc-stats span {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .mc-stats .mc-val {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .mc-last {
+            font-size: 9px;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            opacity: .8;
+            min-height: 14px;
+        }
+
+        .severity-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .sev-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .sev-chip.sev-critical { background: rgba(231,76,60,.15); color: #e74c3c; }
+        .sev-chip.sev-high { background: rgba(253,150,68,.15); color: #fd9644; }
+        .sev-chip.sev-medium { background: rgba(249,202,36,.15); color: #f9ca24; }
+        .sev-chip.sev-low { background: rgba(79,172,254,.15); color: #4facfe; }
+        .sev-chip.sev-info { background: rgba(107,107,154,.15); color: var(--muted); }
+
+        .sev-chip .sev-count {
+            font-weight: 700;
+        }
+
+        .finding-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(42,42,90,.4);
+            font-size: 10px;
+            color: var(--text);
+        }
+
+        .finding-item:last-child {
+            border-bottom: none;
+        }
+
+        .finding-sev {
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 3px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+
+        .finding-sev.fs-critical { background: rgba(231,76,60,.2); color: #e74c3c; }
+        .finding-sev.fs-high { background: rgba(253,150,68,.2); color: #fd9644; }
+        .finding-sev.fs-medium { background: rgba(249,202,36,.2); color: #f9ca24; }
+        .finding-sev.fs-low { background: rgba(79,172,254,.2); color: #4facfe; }
+        .finding-sev.fs-info { background: rgba(107,107,154,.2); color: var(--muted); }
+
+        .finding-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .finding-title {
+            font-weight: 600;
+        }
+
+        .finding-loc {
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .svc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .svc-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            background: var(--darker);
+            border-radius: 5px;
+            font-size: 11px;
+        }
+
+        .svc-url {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Inter', monospace;
+            word-break: break-all;
+        }
+
+        .svc-url:hover {
+            text-decoration: underline;
+        }
+
+        .svc-copy {
+            background: none;
+            border: 1px solid var(--panel-border);
+            color: var(--muted);
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all .15s;
+        }
+
+        .svc-copy:hover {
+            color: var(--text);
+            border-color: var(--accent);
+        }
+
+        .deliv-group {
+            margin-bottom: 8px;
+        }
+
+        .deliv-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .deliv-agent {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+
+        .deliv-agent .deliv-toggle {
+            font-size: 8px;
+            color: var(--muted);
+            transition: transform .2s;
+        }
+
+        .deliv-agent .deliv-toggle.open {
+            transform: rotate(90deg);
+        }
+
+        .deliv-count {
+            font-size: 8px;
+            font-weight: 700;
+            background: rgba(108,99,255,.15);
+            color: var(--accent);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        .deliv-files {
+            display: none;
+            padding-left: 16px;
+        }
+
+        .deliv-files.open {
+            display: block;
+        }
+
+        .deliv-file {
+            font-size: 9px;
+            color: var(--muted);
+            padding: 2px 0;
+            font-family: 'Inter', monospace;
+        }
+
+        .dash-empty {
+            font-size: 10px;
+            color: var(--muted);
+            opacity: .6;
+            text-align: center;
+            padding: 8px 0;
+        }
+
         /* ── Responsive ── */
         @media (max-width: 800px) {
             .main {
@@ -684,6 +1077,58 @@
                 </div>
                 <div class="auth-hint" id="authHint">Using API key from input or container environment.</div>
             </div>
+
+            <!-- ─── Monitoring Dashboard ─── -->
+            <div class="dashboard-wrap" id="dashboardWrap">
+
+                <!-- Pipeline Overview -->
+                <div class="dash-section">
+                    <div class="dash-section-header" onclick="toggleDashSection(this)">
+                        <span class="dash-section-title">PIPELINE OVERVIEW</span>
+                        <span class="dash-section-toggle">&#9660;</span>
+                    </div>
+                    <div class="dash-section-body" id="pipelineBar"></div>
+                </div>
+
+                <!-- Agent Progress -->
+                <div class="dash-section">
+                    <div class="dash-section-header" onclick="toggleDashSection(this)">
+                        <span class="dash-section-title">AGENT PROGRESS</span>
+                        <span class="dash-section-toggle">&#9660;</span>
+                    </div>
+                    <div class="dash-section-body">
+                        <div class="agent-grid" id="agentGrid"></div>
+                    </div>
+                </div>
+
+                <!-- Security Findings -->
+                <div class="dash-section" id="secSection" style="display:none">
+                    <div class="dash-section-header" onclick="toggleDashSection(this)">
+                        <span class="dash-section-title">SECURITY FINDINGS</span>
+                        <span class="dash-section-toggle">&#9660;</span>
+                    </div>
+                    <div class="dash-section-body" id="secPanel"></div>
+                </div>
+
+                <!-- Service Access -->
+                <div class="dash-section" id="svcSection" style="display:none">
+                    <div class="dash-section-header" onclick="toggleDashSection(this)">
+                        <span class="dash-section-title">SERVICE ACCESS</span>
+                        <span class="dash-section-toggle">&#9660;</span>
+                    </div>
+                    <div class="dash-section-body" id="svcPanel"></div>
+                </div>
+
+                <!-- Deliverables -->
+                <div class="dash-section">
+                    <div class="dash-section-header" onclick="toggleDashSection(this)">
+                        <span class="dash-section-title">DELIVERABLES</span>
+                        <span class="dash-section-toggle">&#9660;</span>
+                    </div>
+                    <div class="dash-section-body" id="delivPanel"></div>
+                </div>
+
+            </div>
         </div>
 
         <!-- Side Panel -->
@@ -702,7 +1147,7 @@
 
     <script>
         // ═══════════════════════════════════════════════════════
-        //  PIXEL ART ENGINE
+        //  PIXEL ART ENGINE — Pixel Agents Style
         // ═══════════════════════════════════════════════════════
 
         const canvas = document.getElementById('pixelCanvas');
@@ -711,491 +1156,644 @@
 
         const W = canvas.width;
         const H = canvas.height;
-        const S = 2; // pixel scale
-
-        // Tile IDs
-        const T = {
-            VOID: 0, FLOOR_DARK: 1, FLOOR_MED: 2, FLOOR_LIGHT: 3,
-            WALL_TOP: 4, WALL_SIDE: 5, WALL_CORNER: 6,
-            DESK: 7, MONITOR: 8, CHAIR: 9, PLANT: 10,
-            DOOR: 11, WINDOW: 12, CARPET: 13,
-        };
-
-        // Colour palette
-        const PAL = {
-            [T.VOID]: '#070710',
-            [T.FLOOR_DARK]: '#1a1a2e',
-            [T.FLOOR_MED]: '#16213e',
-            [T.FLOOR_LIGHT]: '#1f274a',
-            [T.WALL_TOP]: '#2a1a4e',
-            [T.WALL_SIDE]: '#1e1340',
-            [T.WALL_CORNER]: '#150e30',
-            [T.DESK]: '#8B6914',
-            [T.MONITOR]: '#2266aa',
-            [T.CHAIR]: '#4a3060',
-            [T.PLANT]: '#2d6a4f',
-            [T.DOOR]: '#5a3010',
-            [T.WINDOW]: '#1a4070',
-            [T.CARPET]: '#2a1840',
-        };
-
-        // Map: 30 cols × 12 rows tiles (each tile = 32px) — wider office layout
         const TILE = 32;
-        const COLS = W / TILE; // 30
-        const ROWS = H / TILE; // 12.5
+        const MAP_COLS = Math.floor(W / TILE);
+        const MAP_ROWS = Math.floor(H / TILE);
 
-        // Office layout: brown wood left (dev), beige break room center-right, blue meeting bottom-right
-        const ROOMS = {
-            arch: { x: 1, y: 1, w: 7, h: 4, color: '#5c4033', floor: 'wood', deskX: 3, deskY: 3 },
-            db: { x: 1, y: 6, w: 7, h: 4, color: '#4a3528', floor: 'wood', deskX: 3, deskY: 8 },
-            be: { x: 9, y: 1, w: 6, h: 5, color: '#c4a574', floor: 'beige', deskX: 11, deskY: 3 },
-            fe: { x: 16, y: 1, w: 6, h: 5, color: '#d4b896', floor: 'beige', deskX: 18, deskY: 3 },
-            qa: { x: 23, y: 8, w: 6, h: 3, color: '#1e3a5f', floor: 'blue', deskX: 25, deskY: 9 },
-            breakRoom: { x: 23, y: 1, w: 6, h: 5, color: '#e8dcc8', floor: 'beige', deskX: null, deskY: null },
+        const WALK_SPEED = 96;
+        const WALK_FRAME_DUR = 0.15;
+        const TYPE_FRAME_DUR = 0.3;
+        const WANDER_MIN = 3;
+        const WANDER_MAX = 12;
+        const WANDER_MOVES_MIN = 3;
+        const WANDER_MOVES_MAX = 6;
+        const SEAT_REST_MIN = 20;
+        const SEAT_REST_MAX = 45;
+        const MAX_DT = 0.1;
+        const SITTING_OFFSET = 6;
+
+        const TL = { VOID: 0, WOOD: 1, BEIGE: 2, BLUE: 3, CORR: 4 };
+        const FLOOR_COL = {
+            [TL.VOID]: '#0a0a14', [TL.WOOD]: '#8a6a42',
+            [TL.BEIGE]: '#c8b898', [TL.BLUE]: '#2a4a70', [TL.CORR]: '#3a3a42',
+        };
+        const FLOOR_COL2 = {
+            [TL.VOID]: '#0a0a14', [TL.WOOD]: '#7a5c38',
+            [TL.BEIGE]: '#bfb090', [TL.BLUE]: '#254060', [TL.CORR]: '#343440',
+        };
+        const WALL_COL = {
+            [TL.WOOD]:  { top: '#4a3020', side: '#3a2418' },
+            [TL.BEIGE]: { top: '#9a8a78', side: '#8a7a6a' },
+            [TL.BLUE]:  { top: '#1e3050', side: '#182840' },
+            [TL.CORR]:  { top: '#2a2a30', side: '#222228' },
         };
 
-        // Furniture props: shelves/plants in wood area, vending/clock/fridge in break room, artwork in blue
-        const PROPS = [
-            { type: 'shelf', x: 2, y: 2 },
-            { type: 'shelf', x: 6, y: 2 },
-            { type: 'plant', x: 2, y: 4 },
-            { type: 'plant', x: 6, y: 4 },
-            { type: 'vending', x: 24, y: 2 },
-            { type: 'clock', x: 27, y: 2 },
-            { type: 'fridge', x: 25, y: 3 },
-            { type: 'plant', x: 24, y: 9 },
-            { type: 'artwork', x: 23, y: 7 },
-            { type: 'artwork', x: 27, y: 7 },
+        const ST = { IDLE: 0, WALK: 1, TYPE: 2 };
+        const DIR = { DOWN: 0, LEFT: 1, RIGHT: 2, UP: 3 };
+
+        // ─── Tilemap ───
+
+        const ROOM_DEFS = [
+            { col: 1,  row: 1, w: 8, h: 4, floor: TL.WOOD  },
+            { col: 1,  row: 7, w: 8, h: 4, floor: TL.WOOD  },
+            { col: 10, row: 1, w: 6, h: 5, floor: TL.BEIGE },
+            { col: 17, row: 1, w: 5, h: 5, floor: TL.BEIGE },
+            { col: 23, row: 1, w: 6, h: 5, floor: TL.BEIGE },
+            { col: 23, row: 7, w: 6, h: 4, floor: TL.BLUE  },
         ];
+
+        function createTilemap() {
+            const map = new Array(MAP_COLS * MAP_ROWS).fill(TL.CORR);
+            for (const r of ROOM_DEFS) {
+                for (let row = r.row; row < r.row + r.h; row++)
+                    for (let col = r.col; col < r.col + r.w; col++)
+                        if (row < MAP_ROWS && col < MAP_COLS)
+                            map[row * MAP_COLS + col] = r.floor;
+            }
+            return map;
+        }
+        const tilemap = createTilemap();
+
+        // ─── Furniture ───
+
+        const FURN_META = {
+            DESK:      { w: 2, h: 1, blocks: true  },
+            BOOKSHELF: { w: 1, h: 1, blocks: true  },
+            PLANT:     { w: 1, h: 1, blocks: true  },
+            COOLER:    { w: 1, h: 1, blocks: true  },
+            CHAIR:     { w: 1, h: 1, blocks: false },
+        };
+
+        const furniture = [
+            { type: 'DESK', col: 2, row: 2 }, { type: 'CHAIR', col: 3, row: 3 },
+            { type: 'DESK', col: 6, row: 2 }, { type: 'CHAIR', col: 7, row: 3 },
+            { type: 'BOOKSHELF', col: 1, row: 1 }, { type: 'BOOKSHELF', col: 8, row: 1 },
+            { type: 'PLANT', col: 1, row: 4 }, { type: 'PLANT', col: 8, row: 4 },
+
+            { type: 'DESK', col: 2, row: 8 }, { type: 'CHAIR', col: 3, row: 9 },
+            { type: 'DESK', col: 6, row: 8 }, { type: 'CHAIR', col: 7, row: 9 },
+            { type: 'BOOKSHELF', col: 1, row: 7 }, { type: 'BOOKSHELF', col: 8, row: 7 },
+            { type: 'PLANT', col: 1, row: 10 }, { type: 'PLANT', col: 8, row: 10 },
+
+            { type: 'DESK', col: 12, row: 2 }, { type: 'CHAIR', col: 13, row: 3 },
+            { type: 'PLANT', col: 10, row: 1 }, { type: 'PLANT', col: 15, row: 1 },
+
+            { type: 'DESK', col: 18, row: 2 }, { type: 'CHAIR', col: 19, row: 3 },
+            { type: 'PLANT', col: 17, row: 1 }, { type: 'PLANT', col: 21, row: 1 },
+
+            { type: 'COOLER', col: 25, row: 2 },
+            { type: 'PLANT', col: 23, row: 1 }, { type: 'PLANT', col: 28, row: 1 },
+
+            { type: 'DESK', col: 24, row: 8 }, { type: 'CHAIR', col: 25, row: 9 },
+            { type: 'BOOKSHELF', col: 23, row: 7 }, { type: 'BOOKSHELF', col: 28, row: 7 },
+            { type: 'PLANT', col: 23, row: 10 }, { type: 'PLANT', col: 28, row: 10 },
+        ];
+
+        const blockedTiles = new Set();
+        for (const f of furniture) {
+            const def = FURN_META[f.type];
+            if (def && def.blocks) {
+                for (let r = 0; r < (def.h || 1); r++)
+                    for (let c = 0; c < (def.w || 1); c++)
+                        blockedTiles.add(`${f.col + c},${f.row + r}`);
+            }
+        }
+
+        // ─── Character Sprite Generator ───
+
+        const PALETTES = [
+            { skin: '#FFCC99', hair: '#553322', shirt: '#a29bfe', pants: '#4a3060', shoes: '#222' },
+            { skin: '#DEB887', hair: '#2c3e50', shirt: '#74b9ff', pants: '#2d3436', shoes: '#333' },
+            { skin: '#FFCC99', hair: '#922b21', shirt: '#fd9644', pants: '#1a252f', shoes: '#222' },
+            { skin: '#FFCC99', hair: '#e91e63', shirt: '#ff6584', pants: '#7b2d8b', shoes: '#222' },
+            { skin: '#DEB887', hair: '#0a3622', shirt: '#55efc4', pants: '#064a2d', shoes: '#333' },
+            { skin: '#FFCC99', hair: '#1a1a3a', shirt: '#00cec9', pants: '#2d3436', shoes: '#222' },
+            { skin: '#DEB887', hair: '#4a1010', shirt: '#e74c3c', pants: '#1a1a2e', shoes: '#333' },
+        ];
+
+        function spx(cx, x, y, w, h, col) {
+            cx.fillStyle = col;
+            cx.fillRect(x * 2, y * 2, w * 2, h * 2);
+        }
+
+        function drawCharShadow(cx) {
+            cx.fillStyle = 'rgba(0,0,0,0.22)';
+            cx.beginPath();
+            cx.ellipse(16, 42, 10, 3, 0, 0, Math.PI * 2);
+            cx.fill();
+        }
+
+        function makeFrame(drawFn) {
+            const c = document.createElement('canvas');
+            c.width = 32; c.height = 48;
+            const cx = c.getContext('2d');
+            cx.imageSmoothingEnabled = false;
+            drawFn(cx);
+            return c;
+        }
+
+        function flipCanvas(src) {
+            const c = document.createElement('canvas');
+            c.width = src.width; c.height = src.height;
+            const cx = c.getContext('2d');
+            cx.translate(c.width, 0);
+            cx.scale(-1, 1);
+            cx.drawImage(src, 0, 0);
+            return c;
+        }
+
+        function makeWalkDown(p) {
+            function frame(ls) {
+                return makeFrame(cx => {
+                    drawCharShadow(cx);
+                    spx(cx, 3, 0, 10, 3, p.hair);
+                    spx(cx, 3, 2, 10, 7, p.skin);
+                    spx(cx, 3, 0, 10, 4, p.hair);
+                    spx(cx, 5, 5, 2, 2, '#FFF'); spx(cx, 9, 5, 2, 2, '#FFF');
+                    spx(cx, 6, 5, 1, 1, '#222'); spx(cx, 10, 5, 1, 1, '#222');
+                    spx(cx, 6, 9, 4, 1, p.skin);
+                    spx(cx, 3, 10, 10, 4, p.shirt);
+                    spx(cx, 1, 10, 2, 5, p.skin);
+                    spx(cx, 13, 10, 2, 5, p.skin);
+                    spx(cx, 5 + ls, 14, 3, 5, p.pants);
+                    spx(cx, 8 - ls, 14, 3, 5, p.pants);
+                    spx(cx, 5 + ls, 19, 3, 2, p.shoes);
+                    spx(cx, 8 - ls, 19, 3, 2, p.shoes);
+                });
+            }
+            return [frame(-1), frame(0), frame(1), frame(0)];
+        }
+
+        function makeWalkUp(p) {
+            function frame(ls) {
+                return makeFrame(cx => {
+                    drawCharShadow(cx);
+                    spx(cx, 3, 0, 10, 8, p.hair);
+                    spx(cx, 4, 7, 8, 2, p.skin);
+                    spx(cx, 3, 9, 10, 5, p.shirt);
+                    spx(cx, 1, 10, 2, 4, p.skin);
+                    spx(cx, 13, 10, 2, 4, p.skin);
+                    spx(cx, 5 + ls, 14, 3, 5, p.pants);
+                    spx(cx, 8 - ls, 14, 3, 5, p.pants);
+                    spx(cx, 5 + ls, 19, 3, 2, p.shoes);
+                    spx(cx, 8 - ls, 19, 3, 2, p.shoes);
+                });
+            }
+            return [frame(-1), frame(0), frame(1), frame(0)];
+        }
+
+        function makeWalkRight(p) {
+            function frame(ls) {
+                return makeFrame(cx => {
+                    drawCharShadow(cx);
+                    spx(cx, 5, 0, 7, 3, p.hair);
+                    spx(cx, 4, 2, 9, 7, p.skin);
+                    spx(cx, 4, 0, 9, 4, p.hair);
+                    spx(cx, 10, 5, 2, 2, '#FFF');
+                    spx(cx, 11, 5, 1, 1, '#222');
+                    spx(cx, 7, 9, 4, 1, p.skin);
+                    spx(cx, 4, 10, 8, 4, p.shirt);
+                    spx(cx, 12, 10, 2, 5, p.skin);
+                    spx(cx, 5, 14, 3, 5, p.pants);
+                    spx(cx, 8 + ls, 14, 3, 5, p.pants);
+                    spx(cx, 5, 19, 3, 2, p.shoes);
+                    spx(cx, 8 + ls, 19, 3, 2, p.shoes);
+                });
+            }
+            return [frame(-1), frame(0), frame(1), frame(0)];
+        }
+
+        function makeTypeDown(p) {
+            function frame(ao) {
+                return makeFrame(cx => {
+                    drawCharShadow(cx);
+                    spx(cx, 3, 0, 10, 3, p.hair);
+                    spx(cx, 3, 2, 10, 7, p.skin);
+                    spx(cx, 3, 0, 10, 4, p.hair);
+                    spx(cx, 5, 5, 2, 2, '#FFF'); spx(cx, 9, 5, 2, 2, '#FFF');
+                    spx(cx, 6, 5, 1, 1, '#222'); spx(cx, 10, 5, 1, 1, '#222');
+                    spx(cx, 6, 9, 4, 1, p.skin);
+                    spx(cx, 3, 10, 10, 4, p.shirt);
+                    spx(cx, 1 + ao, 12, 2, 3, p.skin);
+                    spx(cx, 13 - ao, 12, 2, 3, p.skin);
+                    spx(cx, 4, 14, 8, 3, p.pants);
+                    spx(cx, 4, 17, 3, 2, p.shoes);
+                    spx(cx, 9, 17, 3, 2, p.shoes);
+                });
+            }
+            return [frame(0), frame(1)];
+        }
+
+        function makeTypeUp(p) {
+            function frame(ao) {
+                return makeFrame(cx => {
+                    drawCharShadow(cx);
+                    spx(cx, 3, 0, 10, 8, p.hair);
+                    spx(cx, 4, 7, 8, 2, p.skin);
+                    spx(cx, 3, 9, 10, 5, p.shirt);
+                    spx(cx, 1 + ao, 11, 2, 4, p.skin);
+                    spx(cx, 13 - ao, 11, 2, 4, p.skin);
+                    spx(cx, 4, 14, 8, 3, p.pants);
+                    spx(cx, 4, 17, 3, 2, p.shoes);
+                    spx(cx, 9, 17, 3, 2, p.shoes);
+                });
+            }
+            return [frame(0), frame(1)];
+        }
+
+        function makeCharSprites(palette) {
+            const wd = makeWalkDown(palette);
+            const wu = makeWalkUp(palette);
+            const wr = makeWalkRight(palette);
+            const wl = wr.map(flipCanvas);
+            const td = makeTypeDown(palette);
+            const tu = makeTypeUp(palette);
+            const tr = td; // reuse down type for side
+            const tl = td.map(flipCanvas);
+            return {
+                walk: { [DIR.DOWN]: wd, [DIR.UP]: wu, [DIR.RIGHT]: wr, [DIR.LEFT]: wl },
+                type: { [DIR.DOWN]: td, [DIR.UP]: tu, [DIR.RIGHT]: tr, [DIR.LEFT]: tl },
+            };
+        }
+
+        // ─── Furniture Sprites ───
+
+        function makeDeskSprite() {
+            const c = document.createElement('canvas');
+            c.width = 64; c.height = 32;
+            const cx = c.getContext('2d');
+            cx.imageSmoothingEnabled = false;
+            cx.fillStyle = '#8B6914'; cx.fillRect(0, 8, 64, 12);
+            cx.fillStyle = '#A07818'; cx.fillRect(2, 10, 60, 8);
+            cx.fillStyle = '#6B4E0A';
+            cx.fillRect(4, 20, 6, 10); cx.fillRect(54, 20, 6, 10);
+            cx.fillStyle = '#0d1b2a'; cx.fillRect(22, 0, 20, 10);
+            cx.fillStyle = '#2266aa'; cx.fillRect(24, 2, 16, 6);
+            cx.fillStyle = '#4facfe';
+            cx.fillRect(26, 3, 8, 1); cx.fillRect(26, 5, 12, 1); cx.fillRect(26, 7, 6, 1);
+            cx.fillStyle = '#333'; cx.fillRect(30, 10, 4, 4);
+            return c;
+        }
+
+        function makeBookshelfSprite() {
+            const c = document.createElement('canvas');
+            c.width = 32; c.height = 48;
+            const cx = c.getContext('2d');
+            cx.imageSmoothingEnabled = false;
+            cx.fillStyle = '#5c4033'; cx.fillRect(0, 0, 32, 48);
+            cx.fillStyle = '#6b5040'; cx.fillRect(2, 2, 28, 44);
+            cx.fillStyle = '#5c4033';
+            cx.fillRect(0, 14, 32, 3); cx.fillRect(0, 28, 32, 3);
+            cx.fillStyle = '#cc4444'; cx.fillRect(4, 3, 4, 10);
+            cx.fillStyle = '#4488cc'; cx.fillRect(9, 4, 4, 9);
+            cx.fillStyle = '#44aa66'; cx.fillRect(14, 3, 3, 10);
+            cx.fillStyle = '#aa55cc'; cx.fillRect(18, 5, 4, 8);
+            cx.fillStyle = '#ccaa33'; cx.fillRect(23, 3, 4, 10);
+            cx.fillStyle = '#ff8844'; cx.fillRect(4, 18, 5, 9);
+            cx.fillStyle = '#5588cc'; cx.fillRect(10, 17, 4, 10);
+            cx.fillStyle = '#cc6688'; cx.fillRect(15, 19, 3, 8);
+            cx.fillStyle = '#66ccaa'; cx.fillRect(19, 17, 4, 10);
+            cx.fillStyle = '#7a6a5a';
+            cx.fillRect(5, 33, 10, 10); cx.fillRect(18, 35, 8, 8);
+            return c;
+        }
+
+        function makePlantSprite() {
+            const c = document.createElement('canvas');
+            c.width = 32; c.height = 32;
+            const cx = c.getContext('2d');
+            cx.imageSmoothingEnabled = false;
+            cx.fillStyle = '#a06040'; cx.fillRect(10, 20, 12, 10);
+            cx.fillStyle = '#8a5030'; cx.fillRect(8, 18, 16, 4);
+            cx.fillStyle = '#2d6a4f';
+            cx.beginPath(); cx.ellipse(16, 12, 10, 10, 0, 0, Math.PI * 2); cx.fill();
+            cx.fillStyle = '#3d8a6f';
+            cx.beginPath(); cx.ellipse(12, 10, 5, 5, 0, 0, Math.PI * 2); cx.fill();
+            cx.beginPath(); cx.ellipse(20, 8, 4, 4, 0, 0, Math.PI * 2); cx.fill();
+            return c;
+        }
+
+        function makeCoolerSprite() {
+            const c = document.createElement('canvas');
+            c.width = 32; c.height = 48;
+            const cx = c.getContext('2d');
+            cx.imageSmoothingEnabled = false;
+            cx.fillStyle = '#ccc'; cx.fillRect(6, 16, 20, 28);
+            cx.fillStyle = '#e0e0e0'; cx.fillRect(8, 18, 16, 24);
+            cx.fillStyle = '#6699cc'; cx.fillRect(10, 0, 12, 18);
+            cx.fillStyle = '#88bbee'; cx.fillRect(12, 2, 8, 14);
+            cx.fillStyle = '#666'; cx.fillRect(18, 30, 6, 3);
+            cx.fillStyle = '#4488cc'; cx.fillRect(24, 29, 4, 5);
+            cx.fillStyle = '#999';
+            cx.fillRect(8, 44, 4, 4); cx.fillRect(20, 44, 4, 4);
+            return c;
+        }
+
+        function makeChairSprite() {
+            const c = document.createElement('canvas');
+            c.width = 32; c.height = 32;
+            const cx = c.getContext('2d');
+            cx.imageSmoothingEnabled = false;
+            cx.fillStyle = '#4a3060'; cx.fillRect(6, 10, 20, 16);
+            cx.fillStyle = '#5a4070'; cx.fillRect(8, 12, 16, 12);
+            cx.fillStyle = '#4a3060'; cx.fillRect(8, 4, 16, 8);
+            cx.fillStyle = '#3a2050'; cx.fillRect(10, 6, 12, 4);
+            cx.fillStyle = '#333';
+            cx.fillRect(6, 26, 4, 4); cx.fillRect(22, 26, 4, 4);
+            cx.fillRect(6, 10, 4, 4); cx.fillRect(22, 10, 4, 4);
+            return c;
+        }
+
+        const FURN_SPRITES = {
+            DESK: makeDeskSprite(), BOOKSHELF: makeBookshelfSprite(),
+            PLANT: makePlantSprite(), COOLER: makeCoolerSprite(), CHAIR: makeChairSprite(),
+        };
+
+        // ─── BFS Pathfinding ───
+
+        function isWalkable(col, row, blocked) {
+            if (col < 0 || row < 0 || col >= MAP_COLS || row >= MAP_ROWS) return false;
+            if (tilemap[row * MAP_COLS + col] === TL.VOID) return false;
+            return !(blocked && blocked.has(`${col},${row}`));
+        }
+
+        function findPath(sc, sr, ec, er, blocked) {
+            if (sc === ec && sr === er) return [];
+            if (!isWalkable(ec, er, blocked)) return [];
+            const key = (c, r) => `${c},${r}`;
+            const sk = key(sc, sr), ek = key(ec, er);
+            const visited = new Set([sk]);
+            const parent = new Map();
+            const queue = [{ c: sc, r: sr }];
+            const dirs = [{ dc: 0, dr: -1 }, { dc: 0, dr: 1 }, { dc: -1, dr: 0 }, { dc: 1, dr: 0 }];
+            while (queue.length) {
+                const { c, r } = queue.shift();
+                for (const { dc, dr } of dirs) {
+                    const nc = c + dc, nr = r + dr, nk = key(nc, nr);
+                    if (visited.has(nk) || !isWalkable(nc, nr, blocked)) continue;
+                    visited.add(nk);
+                    parent.set(nk, key(c, r));
+                    if (nk === ek) {
+                        const path = [];
+                        let cur = ek;
+                        while (cur !== sk) {
+                            const [pc, pr] = cur.split(',').map(Number);
+                            path.unshift({ col: pc, row: pr });
+                            cur = parent.get(cur);
+                        }
+                        return path;
+                    }
+                    queue.push({ c: nc, r: nr });
+                }
+            }
+            return [];
+        }
+
+        function randRange(a, b) { return a + Math.random() * (b - a); }
+        function randInt(a, b) { return Math.floor(randRange(a, b + 1)); }
+
+        function randomWalkable(blocked, curC, curR) {
+            const tiles = [];
+            for (let r = 0; r < MAP_ROWS; r++)
+                for (let c = 0; c < MAP_COLS; c++)
+                    if (isWalkable(c, r, blocked)) tiles.push({ col: c, row: r });
+            const far = tiles.filter(t => Math.abs(t.col - curC) + Math.abs(t.row - curR) > 3);
+            const pool = far.length > 0 ? far : tiles;
+            return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : null;
+        }
 
         // ─── Agents ───
+
         const AGENTS = [
             {
-                id: 'arch', name: 'Architect', emoji: '🏛️', roomKey: 'arch',
+                id: 'arch', name: 'Architect', charName: 'Asep', emoji: '🏛️',
                 color: '#a29bfe', glowColor: 'rgba(162,155,254,',
-                char: drawArchitect,
-                statusText: 'Idle', state: 'idle',
-                x: 0, y: 0, // world pixel pos - set after init
-                dirX: 0, dirY: 0, moveTimer: 0,
-                animFrame: 0, animTimer: 0,
-                thinking: false, thinkTimer: 0, thinkFrame: 0,
-                bubble: '',
-                activities: [
-                    'Analyzing user story...', 'Breaking down tasks...', 'Defining API contracts...',
-                    'Designing system architecture...', 'Creating component diagram...', 'Handoff ready ✓'
-                ],
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 3, tileRow: 3, seatCol: 3, seatRow: 3, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 5 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 0,
             },
             {
-                id: 'db', name: 'DB Designer', emoji: '🗄️', roomKey: 'db',
+                id: 'db', name: 'DB Designer', charName: 'Jamal', emoji: '🗄️',
                 color: '#74b9ff', glowColor: 'rgba(116,185,255,',
-                char: drawDBDesigner,
-                statusText: 'Idle', state: 'idle',
-                x: 0, y: 0,
-                dirX: 0, dirY: 0, moveTimer: 0,
-                animFrame: 0, animTimer: 0,
-                thinking: false, thinkTimer: 0, thinkFrame: 0,
-                bubble: '',
-                activities: [
-                    'Reading architecture plan...', 'Modeling entities...', 'Defining relations...',
-                    'Adding indexes for performance...', 'Writing Prisma schema...', 'Schema ready ✓'
-                ],
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 7, tileRow: 3, seatCol: 7, seatRow: 3, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 3 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 1,
             },
             {
-                id: 'be', name: 'Backend Dev', emoji: '⚙️', roomKey: 'be',
+                id: 'be', name: 'Backend Dev', charName: 'Budi', emoji: '⚙️',
                 color: '#fd9644', glowColor: 'rgba(253,150,68,',
-                char: drawBackend,
-                statusText: 'Idle', state: 'idle',
-                x: 0, y: 0,
-                dirX: 0, dirY: 0, moveTimer: 0,
-                animFrame: 0, animTimer: 0,
-                thinking: false, thinkTimer: 0, thinkFrame: 0,
-                bubble: '',
-                activities: [
-                    'Reading DB schema...', 'Setting up Express routes...', 'Implementing auth middleware...',
-                    'Building service layer...', 'Adding Zod validation...', 'API ready ✓'
-                ],
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 3, tileRow: 9, seatCol: 3, seatRow: 9, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 4 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 2,
             },
             {
-                id: 'fe', name: 'Frontend Dev', emoji: '🎨', roomKey: 'fe',
+                id: 'fe', name: 'Frontend Dev', charName: 'Slamet', emoji: '🎨',
                 color: '#ff6584', glowColor: 'rgba(255,101,132,',
-                char: drawFrontend,
-                statusText: 'Idle', state: 'idle',
-                x: 0, y: 0,
-                dirX: 0, dirY: 0, moveTimer: 0,
-                animFrame: 0, animTimer: 0,
-                thinking: false, thinkTimer: 0, thinkFrame: 0,
-                bubble: '',
-                activities: [
-                    'Reviewing API contracts...', 'Building page components...', 'Crafting Google OAuth button...',
-                    'Adding React Hook Form...', 'Styling with Tailwind...', 'UI ready ✓'
-                ],
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 13, tileRow: 3, seatCol: 13, seatRow: 3, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 6 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 3,
             },
             {
-                id: 'qa', name: 'QA Engineer', emoji: '🧪', roomKey: 'qa',
+                id: 'qa', name: 'QA Engineer', charName: 'Mulyono', emoji: '🧪',
                 color: '#55efc4', glowColor: 'rgba(85,239,196,',
-                char: drawQA,
-                statusText: 'Idle', state: 'idle',
-                x: 0, y: 0,
-                dirX: 0, dirY: 0, moveTimer: 0,
-                animFrame: 0, animTimer: 0,
-                thinking: false, thinkTimer: 0, thinkFrame: 0,
-                bubble: '',
-                activities: [
-                    'Reviewing all outputs...', 'Writing unit tests...', 'Writing integration tests...',
-                    'Writing Playwright E2E...', 'Checking security gaps...', 'QA report done ✓'
-                ],
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 25, tileRow: 9, seatCol: 25, seatRow: 9, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 7 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 4,
+            },
+            {
+                id: 'devops', name: 'DevOps Engineer', charName: 'Ade', emoji: '🐳',
+                color: '#00cec9', glowColor: 'rgba(0,206,201,',
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 19, tileRow: 3, seatCol: 19, seatRow: 3, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 8 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 5,
+            },
+            {
+                id: 'sec', name: 'Security Engineer', charName: 'Trisno', emoji: '🔒',
+                color: '#e74c3c', glowColor: 'rgba(231,76,60,',
+                statusText: 'Idle', state: 'idle', bubble: '',
+                fsmState: ST.IDLE, dir: DIR.DOWN,
+                tileCol: 7, tileRow: 9, seatCol: 7, seatRow: 9, seatDir: DIR.UP,
+                x: 0, y: 0, path: [], moveProgress: 0,
+                frame: 0, frameTimer: 0,
+                wanderTimer: 9 + Math.random() * 5,
+                wanderCount: 0, wanderLimit: randInt(3, 6),
+                seatTimer: 0, isActive: false, returningToSeat: false,
+                sprites: null, paletteIdx: 6,
             },
         ];
 
-        // ─── Pipeline state ───
         let pipelineRunning = false;
         let activeAgentIdx = -1;
         let globalTick = 0;
         let particles = [];
-        let connections = []; // animated connection lines between agents
+        let lastFrameTime = 0;
 
-        // ─── Init agent positions ───
+        // ─── Character FSM ───
+
+        function updateCharacter(ch, dt) {
+            switch (ch.fsmState) {
+                case ST.TYPE: {
+                    ch.frameTimer += dt;
+                    if (ch.frameTimer >= TYPE_FRAME_DUR) {
+                        ch.frameTimer -= TYPE_FRAME_DUR;
+                        ch.frame = (ch.frame + 1) % 2;
+                    }
+                    if (!ch.isActive) {
+                        ch.seatTimer -= dt;
+                        if (ch.seatTimer <= 0) {
+                            ch.fsmState = ST.IDLE;
+                            ch.frame = 0;
+                            ch.wanderTimer = randRange(WANDER_MIN, WANDER_MAX);
+                            ch.wanderCount = 0;
+                            ch.wanderLimit = randInt(WANDER_MOVES_MIN, WANDER_MOVES_MAX);
+                        }
+                    }
+                    break;
+                }
+                case ST.IDLE: {
+                    if (ch.isActive && ch.seatCol != null) {
+                        const ub = new Set(blockedTiles);
+                        ub.delete(`${ch.seatCol},${ch.seatRow}`);
+                        ch.path = findPath(ch.tileCol, ch.tileRow, ch.seatCol, ch.seatRow, ub);
+                        if (ch.path.length > 0) {
+                            ch.fsmState = ST.WALK;
+                            ch.moveProgress = 0; ch.frame = 0; ch.frameTimer = 0;
+                        } else if (ch.tileCol === ch.seatCol && ch.tileRow === ch.seatRow) {
+                            ch.fsmState = ST.TYPE;
+                            ch.dir = ch.seatDir; ch.frame = 0;
+                            ch.seatTimer = randRange(SEAT_REST_MIN, SEAT_REST_MAX);
+                        }
+                        break;
+                    }
+                    ch.wanderTimer -= dt;
+                    if (ch.wanderTimer <= 0) {
+                        let target = null;
+                        if (ch.wanderCount >= ch.wanderLimit && ch.seatCol != null) {
+                            const ub = new Set(blockedTiles);
+                            ub.delete(`${ch.seatCol},${ch.seatRow}`);
+                            ch.path = findPath(ch.tileCol, ch.tileRow, ch.seatCol, ch.seatRow, ub);
+                            ch.returningToSeat = true;
+                        } else {
+                            target = randomWalkable(blockedTiles, ch.tileCol, ch.tileRow);
+                            if (target) ch.path = findPath(ch.tileCol, ch.tileRow, target.col, target.row, blockedTiles);
+                            ch.returningToSeat = false;
+                            ch.wanderCount++;
+                        }
+                        if (ch.path && ch.path.length > 0) {
+                            ch.fsmState = ST.WALK;
+                            ch.moveProgress = 0; ch.frame = 0; ch.frameTimer = 0;
+                        } else {
+                            ch.wanderTimer = randRange(WANDER_MIN, WANDER_MAX);
+                        }
+                    }
+                    break;
+                }
+                case ST.WALK: {
+                    ch.frameTimer += dt;
+                    if (ch.frameTimer >= WALK_FRAME_DUR) {
+                        ch.frameTimer -= WALK_FRAME_DUR;
+                        ch.frame = (ch.frame + 1) % 4;
+                    }
+                    if (!ch.path || ch.path.length === 0) {
+                        if (ch.tileCol === ch.seatCol && ch.tileRow === ch.seatRow && (ch.isActive || ch.returningToSeat)) {
+                            ch.fsmState = ST.TYPE; ch.dir = ch.seatDir; ch.frame = 0;
+                            ch.seatTimer = randRange(SEAT_REST_MIN, SEAT_REST_MAX);
+                        } else {
+                            ch.fsmState = ST.IDLE;
+                            ch.wanderTimer = randRange(WANDER_MIN, WANDER_MAX);
+                        }
+                        break;
+                    }
+                    const next = ch.path[0];
+                    const dx = next.col - ch.tileCol, dy = next.row - ch.tileRow;
+                    if (Math.abs(dx) >= Math.abs(dy)) ch.dir = dx > 0 ? DIR.RIGHT : DIR.LEFT;
+                    else ch.dir = dy > 0 ? DIR.DOWN : DIR.UP;
+
+                    ch.moveProgress += (WALK_SPEED / TILE) * dt;
+                    if (ch.moveProgress >= 1) {
+                        ch.tileCol = next.col; ch.tileRow = next.row;
+                        ch.x = ch.tileCol * TILE; ch.y = ch.tileRow * TILE;
+                        ch.path.shift(); ch.moveProgress = 0;
+                        if (ch.isActive && ch.seatCol != null && !(ch.tileCol === ch.seatCol && ch.tileRow === ch.seatRow)) {
+                            const ub = new Set(blockedTiles);
+                            ub.delete(`${ch.seatCol},${ch.seatRow}`);
+                            ch.path = findPath(ch.tileCol, ch.tileRow, ch.seatCol, ch.seatRow, ub);
+                        }
+                    } else {
+                        const fx = ch.tileCol * TILE, fy = ch.tileRow * TILE;
+                        const tx = next.col * TILE, ty = next.row * TILE;
+                        ch.x = fx + (tx - fx) * ch.moveProgress;
+                        ch.y = fy + (ty - fy) * ch.moveProgress;
+                    }
+                    break;
+                }
+            }
+        }
+
+        // ─── Init ───
+
         function initAgents() {
             AGENTS.forEach(a => {
-                const r = ROOMS[a.roomKey];
-                // Place agent near center of room
-                a.x = (r.x + Math.floor(r.w / 2)) * TILE;
-                a.y = (r.y + Math.floor(r.h / 2)) * TILE;
+                a.sprites = makeCharSprites(PALETTES[a.paletteIdx]);
+                a.x = a.tileCol * TILE;
+                a.y = a.tileRow * TILE;
             });
         }
 
-        // ─────────────────────────────────────────────
-        //  CHARACTER DRAW FUNCTIONS  (16×24 pixel art)
-        // ─────────────────────────────────────────────
+        // ─── Particles ───
 
-        function px(ctx, x, y, w, h, col) {
-            ctx.fillStyle = col;
-            ctx.fillRect(x, y, w, h);
-        }
-
-        function drawCharBase(ctx, cx, cy, skinCol, hairCol, shirtCol, pantsCol, frameOffset) {
-            // Body proportions: head 8×8, body 8×8, legs 8×8
-            const bob = Math.sin(frameOffset * 0.18) * 1.5 | 0;
-            const legL = Math.sin(frameOffset * 0.18) > 0 ? 2 : 0;
-            const legR = Math.sin(frameOffset * 0.18) > 0 ? 0 : 2;
-
-            // Shadow
-            ctx.fillStyle = 'rgba(0,0,0,0.25)';
-            ctx.beginPath();
-            ctx.ellipse(cx + 8, cy + 24, 7, 3, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Legs
-            px(ctx, cx + 2, cy + 16 + legL, 4, 8, pantsCol);
-            px(ctx, cx + 10, cy + 16 + legR, 4, 8, pantsCol);
-            // Shoes
-            px(ctx, cx + 1, cy + 24 + legL, 5, 2, '#222');
-            px(ctx, cx + 10, cy + 24 + legR, 5, 2, '#222');
-
-            // Body / shirt
-            px(ctx, cx + 2, cy + 8 + bob, 12, 9, shirtCol);
-            // Arms
-            px(ctx, cx, cy + 9 + bob, 2, 7, skinCol);
-            px(ctx, cx + 14, cy + 9 + bob, 2, 7, skinCol);
-
-            // Neck
-            px(ctx, cx + 6, cy + 6 + bob, 4, 3, skinCol);
-            // Head
-            px(ctx, cx + 2, cy - 1 + bob, 12, 10, skinCol);
-            // Hair
-            px(ctx, cx + 2, cy - 1 + bob, 12, 4, hairCol);
-            // Eyes
-            px(ctx, cx + 5, cy + 3 + bob, 2, 2, '#1a1a2e');
-            px(ctx, cx + 9, cy + 3 + bob, 2, 2, '#1a1a2e');
-            // Pupils gleam
-            px(ctx, cx + 5 + 1, cy + 3 + bob, 1, 1, '#fff');
-            px(ctx, cx + 9 + 1, cy + 3 + bob, 1, 1, '#fff');
-        }
-
-        function drawArchitect(ctx, cx, cy, frame) {
-            drawCharBase(ctx, cx, cy, '#f0c080', '#6c3483', '#a29bfe', '#4a3060', frame);
-            // Blueprint scroll in hand
-            px(ctx, cx + 14, cy + 9, 3, 6, '#ffeaa7');
-            px(ctx, cx + 15, cy + 10, 1, 4, '#0984e3');
-        }
-
-        function drawDBDesigner(ctx, cx, cy, frame) {
-            drawCharBase(ctx, cx, cy, '#d4a574', '#2c3e50', '#74b9ff', '#2d3436', frame);
-            // Glasses
-            px(ctx, cx + 4, cy + 3, 3, 2, '#74b9ff');
-            px(ctx, cx + 9, cy + 3, 3, 2, '#74b9ff');
-            px(ctx, cx + 7, cy + 4, 2, 1, '#555');
-        }
-
-        function drawBackend(ctx, cx, cy, frame) {
-            drawCharBase(ctx, cx, cy, '#c8a882', '#922b21', '#fd9644', '#1a252f', frame);
-            // Coffee cup
-            px(ctx, cx + 14, cy + 9, 4, 5, '#ecf0f1');
-            px(ctx, cx + 15, cy + 10, 2, 3, '#6c3e00');
-        }
-
-        function drawFrontend(ctx, cx, cy, frame) {
-            drawCharBase(ctx, cx, cy, '#f5cba7', '#e91e63', '#ff6584', '#7b2d8b', frame);
-            // Color palette in hand
-            px(ctx, cx + 14, cy + 9, 3, 3, '#ff6584');
-            px(ctx, cx + 15, cy + 12, 3, 3, '#6c63ff');
-        }
-
-        function drawQA(ctx, cx, cy, frame) {
-            drawCharBase(ctx, cx, cy, '#aed6c8', '#0a3622', '#55efc4', '#064a2d', frame);
-            // Magnifying glass
-            px(ctx, cx + 14, cy + 8, 4, 4, '#dfe6e9');
-            px(ctx, cx + 15, cy + 9, 2, 2, '#b2bec3');
-            px(ctx, cx + 16, cy + 12, 2, 3, '#636e72');
-        }
-
-        // ─── Thinking bubble ───
-        function drawBubble(ctx, agent) {
-            if (!agent.bubble) return;
-            const cx = agent.x + 8;
-            const cy = agent.y;
-            const text = agent.bubble;
-            ctx.font = 'bold 9px Inter';
-            const tw = ctx.measureText(text).width;
-            const bw = tw + 16;
-            const bh = 22;
-            const bx = cx - bw / 2;
-            const by = cy - bh - 14;
-
-            // Bubble dots
-            const dotFrame = (globalTick >> 3) % 3;
-            for (let i = 0; i <= 2; i++) {
-                const alpha = i === dotFrame ? 1 : 0.3;
-                ctx.fillStyle = `rgba(255,255,255,${alpha})`;
-                ctx.beginPath();
-                ctx.arc(cx - 6 + i * 6, cy - 8, 2, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // Main bubble
-            ctx.fillStyle = 'rgba(20,20,48,0.92)';
-            roundRect(ctx, bx, by, bw, bh, 6);
-            ctx.fill();
-            ctx.strokeStyle = agent.color;
-            ctx.lineWidth = 1.5;
-            roundRect(ctx, bx, by, bw, bh, 6);
-            ctx.stroke();
-
-            // Tail
-            ctx.fillStyle = 'rgba(20,20,48,0.92)';
-            ctx.beginPath();
-            ctx.moveTo(cx - 4, cy - 14);
-            ctx.lineTo(cx + 4, cy - 14);
-            ctx.lineTo(cx, cy - 10);
-            ctx.closePath();
-            ctx.fill();
-
-            // Text
-            ctx.fillStyle = '#e8e8ff';
-            ctx.font = '9px Inter';
-            ctx.textBaseline = 'middle';
-            ctx.textAlign = 'center';
-            ctx.fillText(text, cx, by + bh / 2);
-            ctx.textAlign = 'left';
-        }
-
-        function roundRect(ctx, x, y, w, h, r) {
-            ctx.beginPath();
-            ctx.moveTo(x + r, y);
-            ctx.lineTo(x + w - r, y);
-            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-            ctx.lineTo(x + w, y + h - r);
-            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-            ctx.lineTo(x + r, y + h);
-            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-            ctx.lineTo(x, y + r);
-            ctx.quadraticCurveTo(x, y, x + r, y);
-            ctx.closePath();
-        }
-
-        // ─── Draw room floor / walls ───
-        function drawRoom(room, highlight) {
-            const { x, y, w, h, color, floor } = room;
-
-            // Floor with zone-specific styling
-            ctx.fillStyle = color;
-            ctx.fillRect(x * TILE, y * TILE, w * TILE, h * TILE);
-
-            if (floor === 'wood') {
-                // Wood grain stripes
-                ctx.strokeStyle = 'rgba(60,40,30,0.4)';
-                ctx.lineWidth = 1;
-                for (let gx = x; gx < x + w; gx += 2) {
-                    ctx.beginPath();
-                    ctx.moveTo(gx * TILE, y * TILE);
-                    ctx.lineTo(gx * TILE, (y + h) * TILE);
-                    ctx.stroke();
-                }
-            } else if (floor === 'beige') {
-                ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-                ctx.lineWidth = 1;
-                for (let gx = x; gx < x + w; gx++) {
-                    ctx.beginPath(); ctx.moveTo(gx * TILE, y * TILE); ctx.lineTo(gx * TILE, (y + h) * TILE); ctx.stroke();
-                }
-                for (let gy = y; gy < y + h; gy++) {
-                    ctx.beginPath(); ctx.moveTo(x * TILE, gy * TILE); ctx.lineTo((x + w) * TILE, gy * TILE); ctx.stroke();
-                }
-            } else if (floor === 'blue') {
-                ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-                ctx.lineWidth = 1;
-                for (let gx = x; gx < x + w; gx++) {
-                    ctx.beginPath(); ctx.moveTo(gx * TILE, y * TILE); ctx.lineTo(gx * TILE, (y + h) * TILE); ctx.stroke();
-                }
-                for (let gy = y; gy < y + h; gy++) {
-                    ctx.beginPath(); ctx.moveTo(x * TILE, gy * TILE); ctx.lineTo((x + w) * TILE, gy * TILE); ctx.stroke();
-                }
-            } else {
-                ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-                ctx.lineWidth = 1;
-                for (let gx = x; gx < x + w; gx++) {
-                    ctx.beginPath(); ctx.moveTo(gx * TILE, y * TILE); ctx.lineTo(gx * TILE, (y + h) * TILE); ctx.stroke();
-                }
-                for (let gy = y; gy < y + h; gy++) {
-                    ctx.beginPath(); ctx.moveTo(x * TILE, gy * TILE); ctx.lineTo((x + w) * TILE, gy * TILE); ctx.stroke();
-                }
-            }
-
-            // Walls — zone-appropriate colors
-            const wallTop = floor === 'blue' ? '#2a3a5a' : floor === 'beige' ? '#a09080' : '#3a2418';
-            const wallSide = floor === 'blue' ? '#1e2a40' : floor === 'beige' ? '#8a7a6a' : '#2a1a10';
-            ctx.fillStyle = wallTop;
-            ctx.fillRect(x * TILE, y * TILE, w * TILE, 4);
-            ctx.fillStyle = wallSide;
-            ctx.fillRect(x * TILE, y * TILE, 3, h * TILE);
-            ctx.fillRect((x + w) * TILE - 3, y * TILE, 3, h * TILE);
-            ctx.fillRect(x * TILE, (y + h) * TILE - 3, w * TILE, 3);
-
-            // Highlight border when active
-            if (highlight) {
-                const agent = AGENTS[activeAgentIdx];
-                const glow = agent ? agent.color : '#6c63ff';
-                ctx.shadowColor = glow;
-                ctx.shadowBlur = 20;
-                ctx.strokeStyle = glow;
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x * TILE + 2, y * TILE + 2, w * TILE - 4, h * TILE - 4);
-                ctx.shadowBlur = 0;
-                ctx.lineWidth = 1;
-            }
-        }
-
-        // ─── Furniture props (pixel art) ───
-        function drawProp(prop) {
-            const px = prop.x * TILE;
-            const py = prop.y * TILE;
-
-            if (prop.type === 'vending') {
-                ctx.fillStyle = '#1a4070';
-                ctx.fillRect(px, py, 24, 40);
-                ctx.fillStyle = '#2a5a90';
-                ctx.fillRect(px + 2, py + 2, 20, 36);
-                ctx.fillStyle = '#4a7ab0';
-                ctx.fillRect(px + 4, py + 8, 16, 12);
-                ctx.fillStyle = '#333';
-                ctx.fillRect(px + 6, py + 22, 12, 4);
-            } else if (prop.type === 'clock') {
-                ctx.fillStyle = '#8a7a6a';
-                ctx.fillRect(px, py, 20, 20);
-                ctx.fillStyle = '#f0e6d8';
-                ctx.fillRect(px + 2, py + 2, 16, 16);
-                ctx.fillStyle = '#333';
-                ctx.fillRect(px + 8, py + 6, 2, 6);
-                ctx.fillRect(px + 7, py + 8, 4, 2);
-            } else if (prop.type === 'fridge') {
-                ctx.fillStyle = '#c0c0c0';
-                ctx.fillRect(px, py, 20, 36);
-                ctx.fillStyle = '#e8e8e8';
-                ctx.fillRect(px + 2, py + 2, 16, 14);
-                ctx.fillRect(px + 2, py + 18, 16, 16);
-                ctx.fillStyle = '#888';
-                ctx.fillRect(px + 6, py + 20, 8, 2);
-            } else if (prop.type === 'shelf') {
-                ctx.fillStyle = '#5c4033';
-                ctx.fillRect(px, py, 28, 24);
-                ctx.fillStyle = '#6b5040';
-                ctx.fillRect(px + 2, py + 4, 24, 4);
-                ctx.fillRect(px + 2, py + 12, 24, 4);
-                ctx.fillRect(px + 2, py + 20, 24, 4);
-            } else if (prop.type === 'plant') {
-                ctx.fillStyle = '#5a4030';
-                ctx.fillRect(px + 4, py + 12, 8, 12);
-                ctx.fillStyle = '#2d6a4f';
-                ctx.beginPath();
-                ctx.ellipse(px + 8, py + 8, 10, 8, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#3d8a6f';
-                ctx.beginPath();
-                ctx.ellipse(px + 6, py + 6, 4, 4, 0, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (prop.type === 'artwork') {
-                ctx.fillStyle = '#3a2a1a';
-                ctx.fillRect(px, py, 20, 16);
-                ctx.fillStyle = '#6b5a4a';
-                ctx.fillRect(px + 2, py + 2, 16, 12);
-                ctx.fillStyle = '#4a7a6a';
-                ctx.fillRect(px + 4, py + 4, 6, 4);
-                ctx.fillStyle = '#7a9a8a';
-                ctx.fillRect(px + 10, py + 6, 6, 4);
-            }
-        }
-
-        function drawProps() {
-            PROPS.forEach(drawProp);
-        }
-
-        // Draw a tiny desk
-        function drawDesk(dx, dy) {
-            // Table top
-            ctx.fillStyle = '#8B6914';
-            ctx.fillRect(dx * TILE - 24, dy * TILE - 20, 48, 8);
-            // Legs
-            ctx.fillStyle = '#6B4F10';
-            ctx.fillRect(dx * TILE - 22, dy * TILE - 12, 4, 12);
-            ctx.fillRect(dx * TILE + 18, dy * TILE - 12, 4, 12);
-            // Monitor
-            ctx.fillStyle = '#0d1b2a';
-            ctx.fillRect(dx * TILE - 8, dy * TILE - 34, 16, 12);
-            ctx.fillStyle = '#1a6496';
-            ctx.fillRect(dx * TILE - 6, dy * TILE - 32, 12, 8);
-            // Monitor glow (tiny lines = code)
-            ctx.fillStyle = '#4facfe';
-            for (let i = 0; i < 3; i++) {
-                ctx.fillRect(dx * TILE - 5, dy * TILE - 31 + i * 3, 6 + Math.random() * 4 | 0, 1);
-            }
-            // Stand
-            ctx.fillStyle = '#333';
-            ctx.fillRect(dx * TILE - 1, dy * TILE - 22, 2, 4);
-        }
-
-        // ─── Particle FX ───
         function spawnParticles(agent, count) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = 0.5 + Math.random() * 1.5;
                 particles.push({
-                    x: agent.x + 8, y: agent.y + 8,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed - 1,
-                    life: 1,
-                    decay: 0.015 + Math.random() * 0.02,
-                    color: agent.color,
-                    size: 2 + Math.random() * 3,
+                    x: agent.x + 16, y: agent.y + 8,
+                    vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
+                    life: 1, decay: 0.015 + Math.random() * 0.02,
+                    color: agent.color, size: 2 + Math.random() * 3,
                 });
             }
         }
 
         function updateParticles() {
             particles = particles.filter(p => p.life > 0);
-            particles.forEach(p => {
-                p.x += p.vx; p.y += p.vy;
-                p.vy += 0.04; // gravity
-                p.life -= p.decay;
-            });
+            particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life -= p.decay; });
         }
 
         function drawParticles() {
@@ -1207,140 +1805,519 @@
             ctx.globalAlpha = 1;
         }
 
-        // ─── Connection Animation ───
+        // ─── Connection Lines ───
+
         function drawConnections() {
             if (activeAgentIdx < 1) return;
-            const from = AGENTS[activeAgentIdx - 1];
-            const to = AGENTS[activeAgentIdx];
-
+            const from = AGENTS[activeAgentIdx - 1], to = AGENTS[activeAgentIdx];
             const t = (globalTick % 60) / 60;
-            const fx = from.x + 8, fy = from.y + 12;
-            const tx = to.x + 8, ty = to.y + 12;
-
-            // Dashed line
+            const fx = from.x + 16, fy = from.y + 16, tx = to.x + 16, ty = to.y + 16;
             ctx.setLineDash([4, 6]);
-            ctx.strokeStyle = from.color;
-            ctx.globalAlpha = 0.4;
-            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = from.color; ctx.globalAlpha = 0.4; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(tx, ty); ctx.stroke();
-            ctx.globalAlpha = 1;
-            ctx.setLineDash([]);
-
-            // Travelling dot
-            const dx = tx - fx, dy = ty - fy;
-            const dotX = fx + dx * t;
-            const dotY = fy + dy * t;
-            ctx.fillStyle = from.color;
-            ctx.shadowColor = from.color;
-            ctx.shadowBlur = 8;
-            ctx.beginPath();
-            ctx.arc(dotX, dotY, 3, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.globalAlpha = 1; ctx.setLineDash([]);
+            ctx.fillStyle = from.color; ctx.shadowColor = from.color; ctx.shadowBlur = 8;
+            ctx.beginPath(); ctx.arc(fx + (tx - fx) * t, fy + (ty - fy) * t, 3, 0, Math.PI * 2); ctx.fill();
             ctx.shadowBlur = 0;
         }
 
-        // ─── Main Draw ───
+        // ─── Speech Bubble ───
+
+        function roundRect(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        function drawBubble(ctx, agent) {
+            if (!agent.bubble) return;
+            const cx = agent.x + 16, cy = agent.y - 16;
+            const text = agent.bubble;
+            ctx.font = 'bold 9px Inter';
+            const tw = ctx.measureText(text).width;
+            const bw = tw + 16, bh = 22;
+            const bx = cx - bw / 2, by = cy - bh - 14;
+            const dotFrame = (globalTick >> 3) % 3;
+            for (let i = 0; i <= 2; i++) {
+                ctx.fillStyle = `rgba(255,255,255,${i === dotFrame ? 1 : 0.3})`;
+                ctx.beginPath(); ctx.arc(cx - 6 + i * 6, cy - 8, 2, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.fillStyle = 'rgba(20,20,48,0.92)';
+            roundRect(ctx, bx, by, bw, bh, 6); ctx.fill();
+            ctx.strokeStyle = agent.color; ctx.lineWidth = 1.5;
+            roundRect(ctx, bx, by, bw, bh, 6); ctx.stroke();
+            ctx.fillStyle = 'rgba(20,20,48,0.92)';
+            ctx.beginPath();
+            ctx.moveTo(cx - 4, cy - 14); ctx.lineTo(cx + 4, cy - 14); ctx.lineTo(cx, cy - 10);
+            ctx.closePath(); ctx.fill();
+            ctx.fillStyle = '#e8e8ff'; ctx.font = '9px Inter';
+            ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+            ctx.fillText(text, cx, by + bh / 2);
+            ctx.textAlign = 'left';
+        }
+
+        // ─── Name Labels ───
+
+        function drawNameLabel(ctx, agent) {
+            const cx = agent.x + 16;
+            const footY = agent.fsmState === ST.TYPE ? agent.y + SITTING_OFFSET + 16 : agent.y + 32;
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            ctx.font = 'bold 8px "Press Start 2P"';
+            ctx.fillStyle = agent.color;
+            ctx.fillText(agent.charName, cx, footY + 2);
+
+            ctx.font = '7px Inter';
+            ctx.fillStyle = 'rgba(200,200,240,0.7)';
+            ctx.fillText(agent.name, cx, footY + 13);
+
+            ctx.textAlign = 'left';
+        }
+
+        // ─── Rendering ───
+
+        function getCharSprite(ch) {
+            if (!ch.sprites) return null;
+            if (ch.fsmState === ST.TYPE) {
+                const tf = ch.sprites.type[ch.dir] || ch.sprites.type[DIR.DOWN];
+                return tf ? tf[ch.frame % tf.length] : null;
+            }
+            const wf = ch.sprites.walk[ch.dir] || ch.sprites.walk[DIR.DOWN];
+            if (ch.fsmState === ST.WALK) return wf[ch.frame % wf.length];
+            return wf[1];
+        }
+
         function draw() {
-            // Background
-            ctx.fillStyle = '#070710';
+            ctx.fillStyle = '#0a0a14';
             ctx.fillRect(0, 0, W, H);
 
-            // Corridor / open floor between zones
-            ctx.fillStyle = '#0f0f1a';
-            ctx.fillRect(0, 0, W, H);
-
-            // Subtle grid for wider office feel
-            ctx.strokeStyle = 'rgba(255,255,255,0.02)';
-            ctx.lineWidth = 1;
-            for (let x = 0; x < COLS; x++) {
-                ctx.beginPath(); ctx.moveTo(x * TILE, 0); ctx.lineTo(x * TILE, H); ctx.stroke();
-            }
-            for (let y = 0; y < Math.ceil(H / TILE); y++) {
-                ctx.beginPath(); ctx.moveTo(0, y * TILE); ctx.lineTo(W, y * TILE); ctx.stroke();
+            // Floor tiles with checkerboard pattern
+            for (let r = 0; r < MAP_ROWS; r++) {
+                for (let c = 0; c < MAP_COLS; c++) {
+                    const t = tilemap[r * MAP_COLS + c];
+                    if (t === TL.VOID) continue;
+                    ctx.fillStyle = (c + r) % 2 === 0 ? FLOOR_COL[t] : FLOOR_COL2[t];
+                    ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
+                }
             }
 
-            // Rooms
-            const roomKeys = Object.keys(ROOMS);
-            roomKeys.forEach((key, i) => {
-                const isActive = activeAgentIdx === i;
-                drawRoom(ROOMS[key], isActive);
-            });
+            // Room walls
+            for (const rm of ROOM_DEFS) {
+                const wc = WALL_COL[rm.floor] || WALL_COL[TL.CORR];
+                const sx = rm.col * TILE, sy = rm.row * TILE;
+                const sw = rm.w * TILE, sh = rm.h * TILE;
+                ctx.fillStyle = wc.top;
+                ctx.fillRect(sx, sy, sw, 4);
+                ctx.fillStyle = wc.side;
+                ctx.fillRect(sx, sy, 3, sh);
+                ctx.fillRect(sx + sw - 3, sy, 3, sh);
+                ctx.fillRect(sx, sy + sh - 3, sw, 3);
+            }
 
-            // Desks (skip rooms without desk position, e.g. break room)
-            roomKeys.forEach(key => {
-                const r = ROOMS[key];
-                if (r.deskX != null && r.deskY != null) drawDesk(r.deskX, r.deskY);
-            });
+            // Z-sorted drawables
+            const drawables = [];
+            for (const f of furniture) {
+                const spr = FURN_SPRITES[f.type];
+                if (!spr) continue;
+                drawables.push({ kind: 'f', sprite: spr, x: f.col * TILE, y: f.row * TILE, zY: f.row * TILE + spr.height });
+            }
+            for (const ch of AGENTS) {
+                const spr = getCharSprite(ch);
+                if (!spr) continue;
+                const sy = ch.fsmState === ST.TYPE ? ch.y - 16 + SITTING_OFFSET : ch.y - 16;
+                drawables.push({ kind: 'c', agent: ch, sprite: spr, x: ch.x, y: sy, zY: ch.y + TILE + 0.5 });
+            }
+            drawables.sort((a, b) => a.zY - b.zY);
 
-            // Furniture props (vending, clock, fridge, shelves, plants, artwork)
-            drawProps();
+            for (const d of drawables) {
+                if (d.kind === 'c') {
+                    const a = d.agent;
+                    if (a.state === 'working' || a.fsmState === ST.TYPE) {
+                        const gr = 20 + Math.sin(globalTick * 0.1) * 5;
+                        const grad = ctx.createRadialGradient(a.x + 16, a.y + 24, 0, a.x + 16, a.y + 24, gr);
+                        grad.addColorStop(0, a.glowColor + '0.3)');
+                        grad.addColorStop(1, a.glowColor + '0)');
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(a.x + 16 - gr, a.y + 24 - gr, gr * 2, gr * 2);
+                    }
+                }
+                ctx.drawImage(d.sprite, d.x, d.y);
+            }
 
-            // Connection lines
             if (pipelineRunning) drawConnections();
-
-            // Particles
             drawParticles();
+            for (const ch of AGENTS) drawNameLabel(ctx, ch);
+            for (const ch of AGENTS) { if (ch.bubble) drawBubble(ctx, ch); }
 
-            // Agents
-            AGENTS.forEach((agent, i) => {
-                if (agent.state === 'idle' && !pipelineRunning) {
-                    // Idle: gentle bounce animation
-                    agent.animTimer++;
-                    if (agent.animTimer > 60) { agent.animTimer = 0; }
-                    agent.animFrame = agent.animTimer;
-                } else if (agent.state === 'working') {
-                    agent.animTimer++;
-                    agent.animFrame = agent.animTimer;
-                }
-
-                // Draw glow under active agent
-                if (agent.state === 'working') {
-                    const glowR = 20 + Math.sin(globalTick * 0.1) * 5;
-                    const grad = ctx.createRadialGradient(
-                        agent.x + 8, agent.y + 20, 0,
-                        agent.x + 8, agent.y + 20, glowR
-                    );
-                    grad.addColorStop(0, agent.glowColor + '0.4)');
-                    grad.addColorStop(1, agent.glowColor + '0)');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(agent.x - glowR, agent.y + 20 - glowR, glowR * 2, glowR * 2);
-                }
-
-                // Draw character via role function
-                agent.char(ctx, agent.x, agent.y, agent.animFrame);
-
-                // Bubble
-                if (agent.bubble) drawBubble(ctx, agent);
-            });
-
-            // DONE: full pipeline badge
             if (!pipelineRunning && activeAgentIdx >= AGENTS.length) {
                 ctx.fillStyle = 'rgba(7,7,16,0.75)';
-                roundRect(ctx, W / 2 - 120, H / 2 - 30, 240, 60, 10);
-                ctx.fill();
-                ctx.strokeStyle = '#43e97b';
-                ctx.lineWidth = 2;
-                roundRect(ctx, W / 2 - 120, H / 2 - 30, 240, 60, 10);
-                ctx.stroke();
+                roundRect(ctx, W / 2 - 120, H / 2 - 30, 240, 60, 10); ctx.fill();
+                ctx.strokeStyle = '#43e97b'; ctx.lineWidth = 2;
+                roundRect(ctx, W / 2 - 120, H / 2 - 30, 240, 60, 10); ctx.stroke();
                 ctx.fillStyle = '#43e97b';
-                ctx.font = 'bold 14px "Press Start 2P"';
-                ctx.textAlign = 'center';
-                ctx.fillText('✅ BUILD DONE!', W / 2, H / 2 + 6);
-                ctx.textAlign = 'left';
-                ctx.font = '11px Inter';
-                ctx.fillStyle = '#a0a0c0';
-                ctx.textAlign = 'center';
-                ctx.fillText('Ready to ship 🚀', W / 2, H / 2 + 24);
+                ctx.font = 'bold 14px "Press Start 2P"'; ctx.textAlign = 'center';
+                ctx.fillText('BUILD DONE!', W / 2, H / 2 + 6);
+                ctx.font = '11px Inter'; ctx.fillStyle = '#a0a0c0';
+                ctx.fillText('Ready to ship', W / 2, H / 2 + 24);
                 ctx.textAlign = 'left';
             }
         }
 
         // ─── Game Loop ───
-        function loop() {
+
+        function loop(timestamp) {
+            const dt = lastFrameTime === 0 ? 0 : Math.min((timestamp - lastFrameTime) / 1000, MAX_DT);
+            lastFrameTime = timestamp;
             globalTick++;
+            for (const ch of AGENTS) updateCharacter(ch, dt);
             updateParticles();
             draw();
             requestAnimationFrame(loop);
+        }
+
+
+        // ═══════════════════════════════════════════════════════
+        //  MONITORING DASHBOARD
+        // ═══════════════════════════════════════════════════════
+
+        const dashData = {};
+        const secFindings = [];
+        const serviceURLs = new Map();
+        const deliverables = new Map();
+        let pipelineStartTime = 0;
+        let pipelineElapsed = 0;
+        let dashTimerHandle = null;
+        let dashRenderPending = false;
+
+        function initDashData() {
+            AGENTS.forEach(a => {
+                dashData[a.id] = {
+                    status: 'idle',
+                    startTime: 0,
+                    elapsed: 0,
+                    msgCount: 0,
+                    fileCount: 0,
+                    lastLine: '',
+                };
+            });
+        }
+
+        function resetDashboard() {
+            Object.keys(dashData).forEach(id => {
+                dashData[id] = { status: 'idle', startTime: 0, elapsed: 0, msgCount: 0, fileCount: 0, lastLine: '' };
+            });
+            secFindings.length = 0;
+            serviceURLs.clear();
+            deliverables.clear();
+            pipelineStartTime = Date.now();
+            pipelineElapsed = 0;
+            document.getElementById('secSection').style.display = 'none';
+            document.getElementById('svcSection').style.display = 'none';
+            renderDashboard();
+        }
+
+        function fmtTime(ms) {
+            const s = Math.floor(ms / 1000);
+            const m = Math.floor(s / 60);
+            const h = Math.floor(m / 60);
+            if (h > 0) return `${h}h ${m % 60}m ${s % 60}s`;
+            if (m > 0) return `${m}m ${s % 60}s`;
+            return `${s}s`;
+        }
+
+        function parseDashboardMessage(agentId, message) {
+            const d = dashData[agentId];
+            if (!d) return;
+
+            d.msgCount++;
+            const trimmed = message.trim();
+            if (trimmed) d.lastLine = trimmed;
+
+            // --- Security findings ---
+            const secRe = /\[SEC-(\d+)\]\s*(.+?)\s*[—\-]+\s*(CRITICAL|HIGH|MEDIUM|LOW|INFO(?:RMATIONAL)?)/gi;
+            let m;
+            while ((m = secRe.exec(message)) !== null) {
+                const id = `SEC-${m[1]}`;
+                if (!secFindings.find(f => f.id === id)) {
+                    secFindings.push({
+                        id,
+                        title: m[2].trim(),
+                        severity: m[3].toUpperCase().replace('INFORMATIONAL', 'INFO'),
+                    });
+                }
+            }
+
+            const locRe = /\*\*Location\*\*:\s*`?([^`\n]+)`?/gi;
+            while ((m = locRe.exec(message)) !== null) {
+                const last = secFindings[secFindings.length - 1];
+                if (last && !last.location) last.location = m[1].trim();
+            }
+
+            if (secFindings.length > 0) {
+                document.getElementById('secSection').style.display = '';
+            }
+
+            // --- Service URLs ---
+            const urlRe = /https?:\/\/(?:localhost|127\.0\.0\.1|0\.0\.0\.0)(?::\d+)(?:\/\S*)?/gi;
+            while ((m = urlRe.exec(message)) !== null) {
+                const url = m[0].replace(/[.,;:)\]'"]+$/, '');
+                if (!serviceURLs.has(url)) {
+                    serviceURLs.set(url, agentId);
+                    document.getElementById('svcSection').style.display = '';
+                }
+            }
+
+            const portRe = /(?:PORT|port)\s*[=:]\s*(\d{2,5})/g;
+            while ((m = portRe.exec(message)) !== null) {
+                const url = `http://localhost:${m[1]}`;
+                if (!serviceURLs.has(url)) {
+                    serviceURLs.set(url, agentId);
+                    document.getElementById('svcSection').style.display = '';
+                }
+            }
+
+            // --- Deliverables (files created) ---
+            const filePatterns = [
+                /(?:Creat(?:ed?|ing)|writ(?:e|ing|ten)|wrote|Writ(?:e|ing))\s+(?:file:?\s*)?['"`]?([^\s'"`]+\.\w{1,10})/gi,
+                /(?:write_file|create_file|writeFile)\s*\(\s*['"`]([^'"`]+)['"]/gi,
+                /(?:saved?|generated?|output)\s+(?:to\s+)?['"`]?([^\s'"`]+\.\w{1,10})/gi,
+            ];
+
+            for (const re of filePatterns) {
+                while ((m = re.exec(message)) !== null) {
+                    const file = m[1].trim();
+                    if (file.length < 3 || file.length > 120) continue;
+                    if (/^(the|a|an|to|in|of)$/i.test(file)) continue;
+                    if (!deliverables.has(agentId)) deliverables.set(agentId, new Set());
+                    deliverables.get(agentId).add(file);
+                    d.fileCount = deliverables.get(agentId).size;
+                }
+            }
+
+            scheduleDashRender();
+        }
+
+        function updateDashAgentStatus(agentId, status) {
+            const d = dashData[agentId];
+            if (!d) return;
+            d.status = status;
+            if (status === 'working' && !d.startTime) d.startTime = Date.now();
+            if (status === 'done' || status === 'error' || status === 'stopped') {
+                if (d.startTime) d.elapsed = Date.now() - d.startTime;
+            }
+            scheduleDashRender();
+        }
+
+        function scheduleDashRender() {
+            if (dashRenderPending) return;
+            dashRenderPending = true;
+            requestAnimationFrame(() => {
+                dashRenderPending = false;
+                renderDashboard();
+            });
+        }
+
+        function toggleDashSection(headerEl) {
+            const body = headerEl.nextElementSibling;
+            const arrow = headerEl.querySelector('.dash-section-toggle');
+            body.classList.toggle('collapsed');
+            arrow.classList.toggle('collapsed');
+        }
+
+        function copyToClipboard(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => { btn.textContent = orig; }, 1200);
+            });
+        }
+
+        function toggleDelivGroup(el) {
+            const files = el.nextElementSibling;
+            const toggle = el.querySelector('.deliv-toggle');
+            files.classList.toggle('open');
+            toggle.classList.toggle('open');
+        }
+
+        function renderDashboard() {
+            renderPipelineBar();
+            renderAgentGrid();
+            renderSecPanel();
+            renderSvcPanel();
+            renderDelivPanel();
+        }
+
+        function renderPipelineBar() {
+            const el = document.getElementById('pipelineBar');
+            const agents = AGENTS;
+            const doneCount = agents.filter(a => dashData[a.id]?.status === 'done').length;
+            const errorCount = agents.filter(a => dashData[a.id]?.status === 'error').length;
+            const workingCount = agents.filter(a => dashData[a.id]?.status === 'working').length;
+            const finishedCount = doneCount + errorCount;
+            const total = agents.length;
+            const pct = total > 0 ? Math.round((finishedCount / total) * 100) : 0;
+
+            let statusClass = 'idle';
+            let statusLabel = 'IDLE';
+            if (workingCount > 0 || (pipelineStartTime && finishedCount < total)) {
+                statusClass = 'running';
+                statusLabel = 'RUNNING';
+            }
+            if (pipelineStartTime && finishedCount === total) {
+                statusClass = 'complete';
+                statusLabel = 'COMPLETE';
+            }
+
+            const elapsed = pipelineStartTime
+                ? (statusClass === 'complete' ? pipelineElapsed || (Date.now() - pipelineStartTime) : Date.now() - pipelineStartTime)
+                : 0;
+            if (statusClass === 'complete' && !pipelineElapsed) pipelineElapsed = elapsed;
+
+            el.innerHTML = `
+                <div class="pipeline-bar">
+                    <span class="pipeline-status-badge ${statusClass}">${statusLabel}</span>
+                    <div class="pipeline-stat">Time: <span class="val">${elapsed ? fmtTime(elapsed) : '--'}</span></div>
+                    <div class="pipeline-stat">Done: <span class="val">${doneCount}/${total}</span></div>
+                    ${errorCount ? `<div class="pipeline-stat" style="color:var(--red)">Errors: <span class="val" style="color:var(--red)">${errorCount}</span></div>` : ''}
+                    <div class="pipeline-progress-track">
+                        <div class="pipeline-progress-fill" style="width:${pct}%"></div>
+                    </div>
+                    <div class="pipeline-stat" style="font-weight:600;color:var(--text)">${pct}%</div>
+                </div>`;
+        }
+
+        function renderAgentGrid() {
+            const el = document.getElementById('agentGrid');
+            el.innerHTML = AGENTS.map(a => {
+                const d = dashData[a.id] || {};
+                const st = d.status || 'idle';
+                const cardClass = st === 'working' ? 'mc-working' : st === 'done' ? 'mc-done' : st === 'error' ? 'mc-error' : '';
+                const badgeClass = st === 'working' ? 'b-working' : st === 'done' ? 'b-done' : st === 'error' ? 'b-error' : 'b-idle';
+                const badgeText = st.charAt(0).toUpperCase() + st.slice(1);
+                const elapsed = d.startTime
+                    ? (st === 'done' || st === 'error' ? fmtTime(d.elapsed) : fmtTime(Date.now() - d.startTime))
+                    : '--';
+                const lastLine = d.lastLine ? (d.lastLine.length > 50 ? d.lastLine.substring(0, 50) + '\u2026' : d.lastLine) : '';
+                return `
+                <div class="mini-card ${cardClass}">
+                    <div class="mc-header">
+                        <span class="mc-name" style="color:${a.color}">${a.charName} <span style="color:var(--muted);font-family:Inter;font-size:7px">${a.name}</span></span>
+                        <span class="mc-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                    <div class="mc-stats">
+                        <span>&#9202; <span class="mc-val">${elapsed}</span></span>
+                        <span>&#9993; <span class="mc-val">${d.msgCount || 0}</span></span>
+                        <span>&#128196; <span class="mc-val">${d.fileCount || 0}</span></span>
+                    </div>
+                    <div class="mc-last">${escHtml(lastLine)}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function escHtml(s) {
+            const div = document.createElement('div');
+            div.textContent = s;
+            return div.innerHTML;
+        }
+
+        function renderSecPanel() {
+            const el = document.getElementById('secPanel');
+            if (secFindings.length === 0) {
+                el.innerHTML = '<div class="dash-empty">No security findings yet</div>';
+                return;
+            }
+
+            const counts = { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0, INFO: 0 };
+            secFindings.forEach(f => { counts[f.severity] = (counts[f.severity] || 0) + 1; });
+
+            let html = '<div class="severity-bar">';
+            for (const [sev, cnt] of Object.entries(counts)) {
+                if (cnt === 0) continue;
+                html += `<span class="sev-chip sev-${sev.toLowerCase()}"><span class="sev-count">${cnt}</span> ${sev}</span>`;
+            }
+            html += '</div>';
+
+            secFindings.forEach(f => {
+                const sevClass = 'fs-' + f.severity.toLowerCase();
+                html += `
+                <div class="finding-item">
+                    <span class="finding-sev ${sevClass}">${f.severity}</span>
+                    <div class="finding-body">
+                        <span class="finding-title">${escHtml(f.id)} ${escHtml(f.title)}</span>
+                        ${f.location ? `<div class="finding-loc">${escHtml(f.location)}</div>` : ''}
+                    </div>
+                </div>`;
+            });
+
+            el.innerHTML = html;
+        }
+
+        function renderSvcPanel() {
+            const el = document.getElementById('svcPanel');
+            if (serviceURLs.size === 0) {
+                el.innerHTML = '<div class="dash-empty">No services detected yet</div>';
+                return;
+            }
+
+            let html = '<div class="svc-list">';
+            for (const [url, agentId] of serviceURLs) {
+                const agent = AGENTS.find(a => a.id === agentId);
+                const from = agent ? agent.charName : agentId;
+                html += `
+                <div class="svc-item">
+                    <span style="font-size:13px">&#127760;</span>
+                    <a href="${escHtml(url)}" target="_blank" rel="noopener" class="svc-url">${escHtml(url)}</a>
+                    <span style="font-size:9px;color:var(--muted);flex-shrink:0">via ${escHtml(from)}</span>
+                    <button class="svc-copy" onclick="copyToClipboard('${url.replace(/'/g, "\\'")}', this)">Copy</button>
+                </div>`;
+            }
+            html += '</div>';
+            el.innerHTML = html;
+        }
+
+        function renderDelivPanel() {
+            const el = document.getElementById('delivPanel');
+            if (deliverables.size === 0) {
+                el.innerHTML = '<div class="dash-empty">No deliverables yet</div>';
+                return;
+            }
+
+            let html = '';
+            for (const [agentId, files] of deliverables) {
+                const agent = AGENTS.find(a => a.id === agentId);
+                const name = agent ? `${agent.charName} (${agent.name})` : agentId;
+                const color = agent ? agent.color : 'var(--text)';
+                html += `
+                <div class="deliv-group">
+                    <div class="deliv-agent" onclick="toggleDelivGroup(this)" style="color:${color}">
+                        <span class="deliv-toggle">&#9654;</span>
+                        ${escHtml(name)}
+                        <span class="deliv-count">${files.size}</span>
+                    </div>
+                    <div class="deliv-files">
+                        ${[...files].map(f => `<div class="deliv-file">${escHtml(f)}</div>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            el.innerHTML = html;
+        }
+
+        function startDashTimer() {
+            if (dashTimerHandle) return;
+            dashTimerHandle = setInterval(() => {
+                if (!pipelineStartTime) return;
+                scheduleDashRender();
+            }, 1000);
         }
 
         // ═══════════════════════════════════════════════════════
@@ -1361,7 +2338,7 @@
       <div class="agent-card" id="card-${a.id}">
         <div class="agent-avatar">${a.emoji}</div>
         <div class="agent-info">
-          <div class="agent-name">${a.name.toUpperCase()}</div>
+          <div class="agent-name">${a.charName.toUpperCase()} <span style="font-family:Inter;font-size:8px;color:var(--muted);text-transform:none;">— ${a.name}</span></div>
           <div class="agent-status" id="status-${a.id}">Idle</div>
           <div class="agent-controls">
             <button class="agent-btn" id="toggle-${a.id}" onclick="toggleAgent('${a.id}')">START</button>
@@ -1454,6 +2431,7 @@
                     agent.state = 'idle';
                     agent.statusText = 'Idle';
                     agent.bubble = '';
+                    agent.isActive = false;
                     setAgentUI(agent, '');
                     log('SYSTEM', 'tag-sys', `⏹ ${agent.name} stopped.`);
                 } catch (err) {
@@ -1496,18 +2474,20 @@
 
                 if (data.type === 'agent-log') {
                     const agent = agentById(data.agentId);
-                    const tagMap = { arch: 'tag-arch', db: 'tag-db', be: 'tag-be', fe: 'tag-fe', qa: 'tag-qa' };
+                    const tagMap = { arch: 'tag-arch', db: 'tag-db', be: 'tag-be', fe: 'tag-fe', qa: 'tag-qa', devops: 'tag-devops', sec: 'tag-sec' };
                     const tagClass = tagMap[data.agentId] || 'tag-sys';
                     const message = (data.message || '').trim();
                     if (!message) return;
 
                     log(agent?.name || 'SYSTEM', tagClass, message);
+                    parseDashboardMessage(data.agentId, message);
 
                     if (agent && data.stream === 'stdout') {
                         const preview = message.length > 40 ? message.substring(0, 40) + '…' : message;
                         agent.bubble = preview;
                         agent.state = 'working';
                         agent.statusText = 'Working';
+                        agent.isActive = true;
                         activeAgentIdx = AGENTS.findIndex((a) => a.id === data.agentId);
                         setAgentUI(agent, 'active');
                         if (Math.random() < 0.3) spawnParticles(agent, 5);
@@ -1518,6 +2498,7 @@
                 if (data.type === 'agent-status') {
                     const agent = agentById(data.agentId);
                     if (!agent) return;
+                    updateDashAgentStatus(data.agentId, data.status);
 
                     if (data.status === 'running') {
                         enabledAgents.add(data.agentId);
@@ -1534,6 +2515,7 @@
                         agent.state = 'working';
                         agent.statusText = 'Working';
                         agent.bubble = 'Gemini CLI processing...';
+                        agent.isActive = true;
                         setAgentUI(agent, 'active');
                         spawnParticles(agent, 15);
                         return;
@@ -1543,6 +2525,7 @@
                         agent.state = 'idle';
                         agent.statusText = 'Done';
                         agent.bubble = 'Finished!';
+                        agent.isActive = false;
                         setAgentUI(agent, 'active');
                         spawnParticles(agent, 20);
                         return;
@@ -1554,6 +2537,7 @@
                         agent.state = 'idle';
                         agent.statusText = 'Stopped';
                         agent.bubble = '';
+                        agent.isActive = false;
                         setAgentUI(agent, '');
                         return;
                     }
@@ -1564,6 +2548,7 @@
                         agent.state = 'idle';
                         agent.statusText = 'Error';
                         agent.bubble = '';
+                        agent.isActive = false;
                         setAgentUI(agent, '');
                     }
                 }
@@ -1690,6 +2675,8 @@
             btn.textContent = '⏳ RUNNING';
             pipelineRunning = true;
 
+            resetDashboard();
+
             const logArea = document.getElementById('logArea');
             logArea.innerHTML = '';
 
@@ -1725,6 +2712,7 @@
                     agent.state = 'working';
                     agent.bubble = 'Working...';
                     agent.statusText = 'Working';
+                    agent.isActive = true;
                     setAgentUI(agent, 'active');
                     spawnParticles(agent, 15);
                     log(agent.name, 'tag-sys', '🚀 Gemini CLI processing...');
@@ -1746,6 +2734,8 @@
                 be: 'Backend Dev — implement API endpoints, services, middleware, and auth. Write actual code files.',
                 fe: 'Frontend Dev — build UI components, pages, forms, and API integration. Write actual code files.',
                 qa: 'QA Engineer — write unit tests, integration tests, and E2E test scenarios. Write actual test files.',
+                devops: 'DevOps Engineer — build Docker images, create docker-compose files, CI/CD pipelines, and make the service run locally. Write actual Dockerfiles, compose files, and scripts.',
+                sec: 'Security Engineer — audit all code and infrastructure for security vulnerabilities, perform penetration testing, check OWASP Top 10 compliance. Report critical findings back to the Architect for remediation.',
             };
             const dir = outputDir || '.';
             return [
@@ -1832,12 +2822,15 @@
         // ═══════════════════════════════════════════════════════
 
         initAgents();
+        initDashData();
         buildAgentCards();
         onAuthModeChanged();
         refreshBackendStatus();
         setInterval(refreshBackendStatus, 12000);
         connectSocket();
-        loop();
+        renderDashboard();
+        startDashTimer();
+        requestAnimationFrame(loop);
     </script>
 </body>
 
