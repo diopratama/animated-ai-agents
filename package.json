@@ -1,0 +1,16 @@
+{
+  "name": "animated-ai-agents",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Animated AI agent team powered by Gemini CLI with pixel art visualization",
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "dev": "npm run dev --prefix backend",
+    "install:backend": "npm install --prefix backend",
+    "postinstall": "npm install --prefix backend",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "local": "./run-local.sh"
+  }
+}

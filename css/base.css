@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --dark: #0d0d1a;
+    --darker: #070710;
+    --panel: #13132b;
+    --panel-border: #2a2a5a;
+    --accent: #6c63ff;
+    --accent2: #ff6584;
+    --green: #43e97b;
+    --yellow: #f9ca24;
+    --blue: #4facfe;
+    --purple: #a29bfe;
+    --orange: #fd9644;
+    --cyan: #00cec9;
+    --red: #e74c3c;
+    --text: #e8e8ff;
+    --muted: #6b6b9a;
+}
+
+body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--panel-border) transparent;
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .5;
+        transform: scale(.8);
+    }
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

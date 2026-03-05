@@ -1,2 +1,9 @@
-backend/node_modules
+node_modules/
 .env
+*.log
+.DS_Store
+Thumbs.db
+
+# Agent output directories (user-generated)
+medium-blog/
+output/

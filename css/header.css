@@ -1,0 +1,64 @@
+/* ── Top Bar ── */
+header {
+    background: var(--panel);
+    border-bottom: 2px solid var(--panel-border);
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+header .logo {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent);
+    letter-spacing: 1px;
+}
+
+header .tabs {
+    display: flex;
+    gap: 0;
+}
+
+header .tab {
+    font-size: 11px;
+    padding: 6px 16px;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+}
+
+header .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+header .tab:hover {
+    color: var(--text);
+}
+
+.spacer {
+    flex: 1;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.status-dot.offline {
+    background: var(--accent2);
+    box-shadow: 0 0 8px var(--accent2);
+}
+
+.status-dot.warn {
+    background: var(--yellow);
+    box-shadow: 0 0 8px var(--yellow);
+}
