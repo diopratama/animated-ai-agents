@@ -15,4 +15,5 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
       - ./:/workspace/animated-ai-agents
+      - ./uploads:/workspace/animated-ai-agents/uploads
       - ${HOME}/.gemini:/root/.gemini:rw

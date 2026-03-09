@@ -530,16 +530,16 @@ function parseRequiredAgents(archOutput) {
 
     const text = archOutput.toLowerCase();
     const agentKeywords = {
-        uxr:    ['ux researcher', 'user researcher', 'user research'],
-        uxa:    ['ux architect', 'ux architecture'],
-        uid:    ['ui designer', 'visual designer', 'interface designer'],
-        ipe:    ['image prompt', 'prompt engineer', 'asset generation'],
-        db:     ['db designer', 'database designer'],
-        be:     ['backend dev', 'backend developer'],
-        fe:     ['frontend dev', 'frontend developer'],
-        qa:     ['qa engineer', 'qa agent'],
+        uxr: ['ux researcher', 'user researcher', 'user research'],
+        uxa: ['ux architect', 'ux architecture'],
+        uid: ['ui designer', 'visual designer', 'interface designer'],
+        ipe: ['image prompt', 'prompt engineer', 'asset generation'],
+        db: ['db designer', 'database designer'],
+        be: ['backend dev', 'backend developer'],
+        fe: ['frontend dev', 'frontend developer'],
+        qa: ['qa engineer', 'qa agent'],
         devops: ['devops engineer'],
-        sec:    ['security engineer'],
+        sec: ['security engineer'],
     };
     const needed = [];
     for (const [id, keywords] of Object.entries(agentKeywords)) {
@@ -571,16 +571,16 @@ async function dispatchAgent(agent, story, outputDir) {
 // ── Pipeline Mode (Build / Fix) ──
 
 const FIX_KEYWORDS = {
-    uxr:    ['user research', 'persona', 'journey map', 'usability', 'user testing', 'heuristic', 'user interview', 'survey'],
-    uxa:    ['information architecture', 'wireframe', 'design system', 'design token', 'breakpoint', 'responsive design', 'navigation pattern'],
-    uid:    ['visual design', 'color palette', 'typography', 'icon', 'illustration', 'component design', 'dark mode', 'theme', 'spacing', 'shadow'],
-    ipe:    ['image prompt', 'ai image', 'midjourney', 'dall-e', 'stable diffusion', 'asset generation', 'photography prompt', 'visual asset'],
-    fe:     ['css', 'html', 'ui', 'button', 'layout', 'style', 'page', 'form', 'render', 'display', 'click', 'modal', 'responsive', 'frontend', 'component', 'react', 'vue', 'angular', 'tailwind', 'margin', 'padding', 'flex', 'grid'],
-    be:     ['api', 'endpoint', 'server', 'route', 'middleware', 'express', '500', '502', '503', 'cors', 'request', 'response', 'auth', 'backend', 'controller', 'service', 'node', 'fastify'],
-    db:     ['sql', 'migration', 'schema', 'table', 'column', 'query', 'foreign key', 'index', 'database', 'postgres', 'mysql', 'mongo', 'prisma', 'sequelize', 'typeorm'],
+    uxr: ['user research', 'persona', 'journey map', 'usability', 'user testing', 'heuristic', 'user interview', 'survey'],
+    uxa: ['information architecture', 'wireframe', 'design system', 'design token', 'breakpoint', 'responsive design', 'navigation pattern'],
+    uid: ['visual design', 'color palette', 'typography', 'icon', 'illustration', 'component design', 'dark mode', 'theme', 'spacing', 'shadow'],
+    ipe: ['image prompt', 'ai image', 'midjourney', 'dall-e', 'stable diffusion', 'asset generation', 'photography prompt', 'visual asset'],
+    fe: ['css', 'html', 'ui', 'button', 'layout', 'style', 'page', 'form', 'render', 'display', 'click', 'modal', 'responsive', 'frontend', 'component', 'react', 'vue', 'angular', 'tailwind', 'margin', 'padding', 'flex', 'grid'],
+    be: ['api', 'endpoint', 'server', 'route', 'middleware', 'express', '500', '502', '503', 'cors', 'request', 'response', 'auth', 'backend', 'controller', 'service', 'node', 'fastify'],
+    db: ['sql', 'migration', 'schema', 'table', 'column', 'query', 'foreign key', 'index', 'database', 'postgres', 'mysql', 'mongo', 'prisma', 'sequelize', 'typeorm'],
     devops: ['docker', 'container', 'deploy', 'compose', 'port', 'nginx', 'ci', 'cd', 'pipeline', 'build', 'dockerfile', 'k8s', 'kubernetes', 'helm', 'github action', 'yaml'],
-    qa:     ['test', 'assert', 'spec', 'coverage', 'e2e', 'unit test', 'integration', 'jest', 'mocha', 'cypress', 'playwright', 'vitest'],
-    sec:    ['xss', 'csrf', 'injection', 'vulnerability', 'security', 'ssl', 'certificate', 'token', 'jwt', 'owasp', 'permission', 'privilege', 'exploit'],
+    qa: ['test', 'assert', 'spec', 'coverage', 'e2e', 'unit test', 'integration', 'jest', 'mocha', 'cypress', 'playwright', 'vitest'],
+    sec: ['xss', 'csrf', 'injection', 'vulnerability', 'security', 'ssl', 'certificate', 'token', 'jwt', 'owasp', 'permission', 'privilege', 'exploit'],
 };
 
 function detectFixAgent(text) {
@@ -680,7 +680,7 @@ function onPipelineModeChanged() {
         input.placeholder = 'Describe the bug or paste error message / screenshot here...';
         input.rows = 3;
         fixWrap.style.display = '';
-        pasteZone.style.display = '';
+        pasteZone.style.display = _pastedImages.length > 0 ? 'flex' : 'none';
         runBtn.textContent = '🔧 FIX';
         populateFixAgentDropdown();
         updateFixAutoTag();
@@ -690,95 +690,188 @@ function onPipelineModeChanged() {
         input.placeholder = 'As a user I want to...';
         input.rows = 2;
         fixWrap.style.display = 'none';
-        pasteZone.style.display = 'none';
+        pasteZone.style.display = _pastedImages.length > 0 ? 'flex' : 'none';
         runBtn.textContent = '▶ RUN ALL';
-        _pastedImages = [];
-        document.getElementById('pastePreviews').innerHTML = '';
     }
-}
-
-function buildFixPrompt(agent, bugDescription, outputDir, images) {
-    const roleMap = {
-        uxr:    'UX Researcher — fix user research artifacts, personas, journey maps, and usability findings.',
-        uxa:    'UX Architect — fix information architecture, wireframes, design system tokens, and UX specifications.',
-        uid:    'UI Designer — fix visual design specs, component designs, color/typography issues, and accessibility compliance.',
-        ipe:    'Image Prompt Engineer — fix AI image prompts, asset specifications, and visual asset documentation.',
-        db:     'DB Designer — fix database schema, migrations, queries, and data issues.',
-        be:     'Backend Dev — fix API endpoints, services, middleware, and server-side logic.',
-        fe:     'Frontend Dev — fix UI components, styles, layout, forms, and client-side logic.',
-        qa:     'QA Engineer — fix failing tests, update test cases, and resolve test infrastructure issues.',
-        devops: 'DevOps Engineer — fix Docker, CI/CD, deployment, and infrastructure issues.',
-        sec:    'Security Engineer — fix security vulnerabilities, auth issues, and hardening problems.',
-    };
-    const dir = outputDir || '.';
-    const lines = [
-        `You are: ${agent.name} (${roleMap[agent.id] || agent.name})`,
-        ``,
-        `The user has reported a bug or error in the existing project at "./${dir}/".`,
-        ``,
-        `Bug/error description:`,
-        bugDescription,
-    ];
-
-    if (images && images.length > 0) {
-        lines.push(``, `The user also attached ${images.length} screenshot(s) showing the issue.`);
-        lines.push(`Screenshot data is embedded below as base64 — analyze them to understand the visual bug.`);
-        for (const img of images) {
-            lines.push(``, `[Screenshot: ${img.name}]`, img.dataUrl);
-        }
-    }
-
-    lines.push(
-        ``,
-        `IMPORTANT:`,
-        `1. First, READ the existing code in "./${dir}/" to understand the current implementation.`,
-        `2. Identify the root cause of the bug.`,
-        `3. Fix ONLY the affected code. Do not rewrite unrelated files.`,
-        `4. If the fix requires a new file, create it under "./${dir}/".`,
-        `5. Explain what you changed and why.`,
-    );
-    return lines.join('\n');
 }
 
 let _pastedImages = [];
 
 function initPasteHandler() {
-    document.getElementById('storyInput').addEventListener('paste', (e) => {
-        const mode = document.getElementById('pipelineMode').value;
-        if (mode !== 'fix') return;
+    const area = document.querySelector('.story-input-area');
+    const input = document.getElementById('storyInput');
+
+    if (!area || !input) return;
+
+    input.addEventListener('paste', async (e) => {
         const items = e.clipboardData?.items;
         if (!items) return;
+        const files = [];
         for (const item of items) {
             if (!item.type.startsWith('image/')) continue;
             e.preventDefault();
             const file = item.getAsFile();
-            if (!file) continue;
-            const reader = new FileReader();
-            reader.onload = () => {
-                _pastedImages.push({ name: file.name || `screenshot_${Date.now()}.png`, dataUrl: reader.result });
-                renderPastePreviews();
-            };
-            reader.readAsDataURL(file);
+            if (file) files.push(file);
+        }
+        if (files.length > 0) {
+            handleImageFiles(files);
+        }
+    });
+
+    area.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        area.classList.add('drag-over');
+    });
+
+    area.addEventListener('dragleave', () => {
+        area.classList.remove('drag-over');
+    });
+
+    area.addEventListener('drop', (e) => {
+        e.preventDefault();
+        area.classList.remove('drag-over');
+        const files = e.dataTransfer?.files;
+        if (!files) return;
+        const imageFiles = [];
+        for (const file of files) {
+            if (file.type.startsWith('image/')) {
+                imageFiles.push(file);
+            }
+        }
+        if (imageFiles.length > 0) {
+            handleImageFiles(imageFiles);
         }
     });
 }
 
+async function handleImageFiles(files) {
+    const outputDir = document.getElementById('outputDir').value.trim();
+
+    log('SYSTEM', 'tag-sys', `📤 Uploading ${files.length} reference image(s)...`);
+
+    const formData = new FormData();
+    formData.append('outputDir', outputDir);
+    for (const file of files) {
+        formData.append('images', file);
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/upload`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Upload failed');
+        }
+
+        const data = await res.json();
+        const uploaded = data.files || [];
+
+        for (const up of uploaded) {
+            // We still want a local preview, so we'll read as dataUrl just for the UI
+            const reader = new FileReader();
+            reader.onload = () => {
+                _pastedImages.push({
+                    name: up.name,
+                    serverPath: up.serverPath,
+                    fullPath: up.fullPath,
+                    isTemp: up.isTemp,
+                    dataUrl: reader.result
+                });
+                renderPastePreviews();
+            };
+            // Find the original file for the reader
+            const orig = Array.from(files).find(f => f.name === up.name);
+            if (orig) {
+                reader.readAsDataURL(orig);
+            } else {
+                // If it's a blob from paste, we might not have a matching name
+                _pastedImages.push({
+                    name: up.name,
+                    serverPath: up.serverPath,
+                    fullPath: up.fullPath,
+                    isTemp: up.isTemp,
+                    dataUrl: '' // No preview for now
+                });
+                renderPastePreviews();
+            }
+        }
+        const logPath = outputDir ? './_references/' : './uploads/ (temp)';
+        log('SYSTEM', 'tag-sys', `✅ Uploaded ${uploaded.length} image(s) to ${logPath}`);
+    } catch (err) {
+        log('SYSTEM', 'tag-sys', `❌ Upload failed: ${err.message}`);
+    }
+}
+
+async function syncUploadedImages(outputDir) {
+    if (_pastedImages.length === 0) return;
+    const hasTemp = _pastedImages.some(img => img.isTemp);
+    if (!hasTemp) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/api/uploads/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ outputDir, files: _pastedImages })
+        });
+        if (res.ok) {
+            const data = await res.json();
+            _pastedImages = data.files || [];
+            renderPastePreviews();
+        }
+    } catch (err) {
+        log('SYSTEM', 'tag-sys', `⚠️ Reference sync failed: ${err.message}`);
+    }
+}
+
+function onImageUpload(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    handleImageFiles(Array.from(files));
+    event.target.value = '';
+}
+
 function renderPastePreviews() {
     const container = document.getElementById('pastePreviews');
+    const label = document.getElementById('pasteZoneLabel');
+    if (!container) return;
+
     container.innerHTML = '';
     _pastedImages.forEach((img, idx) => {
         const thumb = document.createElement('div');
         thumb.className = 'paste-thumb';
-        thumb.innerHTML = `<img src="${img.dataUrl}" alt="screenshot" /><button class="paste-thumb-remove" onclick="removePastedImage(${idx})">×</button>`;
+        thumb.title = img.name;
+        thumb.innerHTML = `
+            <img src="${img.dataUrl || 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'%3E%3Crect width=\'100%25\' height=\'100%25\' fill=\'%23333\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23666\' font-size=\'10\'%3ENo Preview%3C/text%3E%3C/svg%3E'}" alt="Reference image ${idx + 1}: ${img.name}" />
+            <button class="paste-thumb-remove" 
+                    onclick="removePastedImage(${idx})" 
+                    title="Remove image"
+                    aria-label="Remove reference image ${idx + 1}">×</button>`;
         container.appendChild(thumb);
     });
+
+    if (label) {
+        label.textContent = `REFERENCE IMAGES (${_pastedImages.length})`;
+    }
+
     const zone = document.getElementById('pasteZone');
-    zone.style.display = _pastedImages.length > 0 || document.getElementById('pipelineMode').value === 'fix' ? '' : 'none';
+    if (zone) {
+        zone.style.display = _pastedImages.length > 0 ? 'flex' : 'none';
+    }
 }
 
 function removePastedImage(idx) {
     _pastedImages.splice(idx, 1);
     renderPastePreviews();
+}
+
+function clearAllImages() {
+    if (confirm('Clear all uploaded reference images?')) {
+        _pastedImages = [];
+        renderPastePreviews();
+    }
 }
 
 async function startQuickFix() {
@@ -831,6 +924,7 @@ async function startQuickFix() {
     }
 
     try {
+        await syncUploadedImages(outputDir);
         await enableAgent(agentId);
     } catch (err) {
         log('SYSTEM', 'tag-sys', `❌ Could not enable ${agent.name}: ${err.message}`);
@@ -916,6 +1010,8 @@ async function startPipeline() {
 
     log('SYSTEM', 'tag-sys', `🚀 Pipeline: "${story}"`);
     log('SYSTEM', 'tag-sys', `📁 Output dir: ${outputDir}`);
+
+    await syncUploadedImages(outputDir);
 
     // ── Phase 1: Architect analyzes the task and picks agents ──
     const arch = agentById('arch');
@@ -1126,12 +1222,25 @@ function buildClientPrompt(agent, story, outputDir) {
         ``,
         `User story: ${story}`,
         ``,
+    ];
+
+    if (_pastedImages.length > 0) {
+        lines.push(`The user has provided ${_pastedImages.length} reference image(s) for this task.`);
+        lines.push(`Reference images are available in the "./_references/" directory:`);
+        for (const img of _pastedImages) {
+            lines.push(`- ${img.name}: @./${img.serverPath}`);
+        }
+        lines.push(``, `Analyze these images to understand the design requirements or visual context.`);
+        lines.push(``);
+    }
+
+    lines.push(
         `IMPORTANT: Create all files under the directory "./${dir}/". Use mkdir and write_file tools to create actual files on disk. Do not just describe what you would do — actually create the files.`,
         ``,
         `Keep your implementation minimal and appropriate for the task scope. Do not over-engineer. Match the complexity of your output to what the user story actually requires — a simple landing page should use plain HTML/CSS/JS, not a full framework project with databases and auth.`,
         ``,
         `Start working now. Produce your deliverables as real files.`,
-    ];
+    );
 
     if (agent.id === 'arch') {
         lines.push(
@@ -1158,5 +1267,49 @@ function buildClientPrompt(agent, story, outputDir) {
         );
     }
 
+    return lines.join('\n');
+}
+
+function buildFixPrompt(agent, bugDescription, outputDir, images) {
+    const roleMap = {
+        uxr: 'UX Researcher — fix user research artifacts, personas, journey maps, and usability findings.',
+        uxa: 'UX Architect — fix information architecture, wireframes, design system tokens, and UX specifications.',
+        uid: 'UI Designer — fix visual design specs, component designs, color/typography issues, and accessibility compliance.',
+        ipe: 'Image Prompt Engineer — fix AI image prompts, asset specifications, and visual asset documentation.',
+        db: 'DB Designer — fix database schema, migrations, queries, and data issues.',
+        be: 'Backend Dev — fix API endpoints, services, middleware, and server-side logic.',
+        fe: 'Frontend Dev — fix UI components, styles, layout, forms, and client-side logic.',
+        qa: 'QA Engineer — fix failing tests, update test cases, and resolve test infrastructure issues.',
+        devops: 'DevOps Engineer — fix Docker, CI/CD, deployment, and infrastructure issues.',
+        sec: 'Security Engineer — fix security vulnerabilities, auth issues, and hardening problems.',
+    };
+    const dir = outputDir || '.';
+    const lines = [
+        `You are: ${agent.name} (${roleMap[agent.id] || agent.name})`,
+        ``,
+        `The user has reported a bug or error in the existing project at "./${dir}/".`,
+        ``,
+        `Bug/error description:`,
+        bugDescription,
+    ];
+
+    if (images && images.length > 0) {
+        lines.push(``, `The user also provided ${images.length} screenshot(s) showing the issue.`);
+        lines.push(`Screenshots are available in the "./_references/" directory:`);
+        for (const img of images) {
+            lines.push(`- ${img.name}: @./${img.serverPath}`);
+        }
+        lines.push(``, `Analyze these images to understand the visual bug.`);
+    }
+
+    lines.push(
+        ``,
+        `IMPORTANT:`,
+        `1. First, READ the existing code in "./${dir}/" to understand the current implementation.`,
+        `2. Identify the root cause of the bug.`,
+        `3. Fix ONLY the affected code. Do not rewrite unrelated files.`,
+        `4. If the fix requires a new file, create it under "./${dir}/".`,
+        `5. Explain what you changed and why.`,
+    );
     return lines.join('\n');
 }

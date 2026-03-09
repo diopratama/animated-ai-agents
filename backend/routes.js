@@ -1,6 +1,7 @@
 import { Router } from "express";
 import path from "node:path";
 import fs from "node:fs";
+import multer from "multer";
 import {
   AGENT_DEFS,
   runningAgents,
@@ -16,6 +17,98 @@ import { broadcast, wireAgentIO } from "./wsHandler.js";
 
 export function createRoutes(projectRoot) {
   const router = Router();
+
+  const storage = multer.memoryStorage();
+  const upload = multer({
+    storage,
+    limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype.startsWith("image/")) {
+        cb(null, true);
+      } else {
+        cb(new Error("Only images are allowed."));
+      }
+    },
+  });
+
+  router.post("/api/upload", upload.array("images"), (req, res) => {
+    const { outputDir } = req.body;
+
+    try {
+      let targetDir;
+      if (outputDir) {
+        const resolvedOutputDir = resolveOutputDir(outputDir, projectRoot);
+        targetDir = path.join(resolvedOutputDir, "_references");
+      } else {
+        // Fallback to central uploads folder if no outputDir selected yet
+        targetDir = path.join(projectRoot, "uploads");
+      }
+
+      if (!fs.existsSync(targetDir)) {
+        fs.mkdirSync(targetDir, { recursive: true });
+      }
+
+      const files = req.files.map(f => {
+        const safeName = `${Date.now()}-${f.originalname.replace(/[^a-z0-9._-]/gi, "_")}`;
+        const targetPath = path.join(targetDir, safeName);
+        fs.writeFileSync(targetPath, f.buffer);
+
+        // Return a path that's either relative to outputDir/_references or just uploads/
+        return {
+          name: f.originalname,
+          serverPath: outputDir ? `_references/${safeName}` : `uploads/${safeName}`,
+          fullPath: targetPath,
+          size: f.size,
+          isTemp: !outputDir
+        };
+      });
+      res.json({ ok: true, files });
+    } catch (error) {
+      console.error("Upload error:", error);
+      res.status(500).json({ ok: false, error: error.message });
+    }
+  });
+
+  router.post("/api/uploads/sync", (req, res) => {
+    const { outputDir, files } = req.body;
+    if (!outputDir || !files || !Array.isArray(files)) {
+      return res.status(400).json({ ok: false, error: "Missing outputDir or files array." });
+    }
+
+    try {
+      const resolvedOutputDir = resolveOutputDir(outputDir, projectRoot);
+      const refDir = path.join(resolvedOutputDir, "_references");
+
+      if (!fs.existsSync(refDir)) {
+        fs.mkdirSync(refDir, { recursive: true });
+      }
+
+      const syncedFiles = files.map(f => {
+        if (!f.isTemp) return f; // Already in a project folder
+
+        const oldPath = f.fullPath;
+        const fileName = path.basename(oldPath);
+        const newPath = path.join(refDir, fileName);
+
+        if (fs.existsSync(oldPath)) {
+          fs.copyFileSync(oldPath, newPath);
+          // We keep the old one in uploads just in case, but return the new project-specific path
+        }
+
+        return {
+          ...f,
+          isTemp: false,
+          serverPath: `_references/${fileName}`,
+          fullPath: newPath
+        };
+      });
+
+      res.json({ ok: true, files: syncedFiles });
+    } catch (error) {
+      console.error("Sync error:", error);
+      res.status(500).json({ ok: false, error: error.message });
+    }
+  });
 
   function buildPrompt(agentId, story, outputDir) {
     const def = AGENT_DEFS[agentId];

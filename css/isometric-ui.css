@@ -1,0 +1,116 @@
+/* ─── Isometric UI & Retro Game Aesthetic ─── */
+
+:root {
+    --crt-bg: #0d0d15;
+    --game-green: #43e97b;
+    --game-gold: #fbbf24;
+    --pixel-border: 4px solid #000;
+}
+
+#pixelCanvas {
+    background: var(--crt-bg);
+    image-rendering: pixelated;
+    border: 4px solid #1a1a2e;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 100px rgba(0, 0, 0, 0.2);
+    cursor: crosshair;
+}
+
+/* CRT Scanline Effect Overlay */
+.canvas-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.canvas-wrap::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    z-index: 2;
+    background-size: 100% 3px, 3px 100%;
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.agent-name-label {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 8px;
+    text-shadow: 1px 1px #000;
+    pointer-events: none;
+}
+
+/* Retro Scrollbar */
+.log-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.log-area::-webkit-scrollbar-track {
+    background: #0d0d15;
+}
+
+.log-area::-webkit-scrollbar-thumb {
+    background: #333;
+    border: 1px solid #000;
+}
+
+/* Build Mode Enhancements */
+.story-input-wrap {
+    background: #1a1a2e;
+    border: 4px solid #000;
+    padding: 15px;
+    position: relative;
+}
+
+.mode-select {
+    background: #000;
+    color: var(--game-green);
+    border: 2px solid var(--game-green);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    padding: 4px 8px;
+}
+
+.run-btn {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    text-transform: uppercase;
+    background: var(--game-green);
+    color: #000;
+    border: 4px solid #000;
+    padding: 10px 20px;
+    transition: transform 0.1s;
+}
+
+.run-btn:active {
+    transform: scale(0.95);
+    background: #3ac067;
+}
+
+.folder-bar {
+    border: 2px solid #000 !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Agent Cards */
+.agent-card {
+    background: #1a1a2e;
+    border: 2px solid #000;
+    margin-bottom: 8px;
+    padding: 12px;
+}
+
+.agent-card.active {
+    border-color: var(--game-green);
+    box-shadow: 0 0 15px rgba(67, 233, 123, 0.2);
+}
+
+.agent-avatar {
+    background: #000;
+    border: 2px solid #333;
+    border-radius: 4px;
+}

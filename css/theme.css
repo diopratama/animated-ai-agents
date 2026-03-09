@@ -1,0 +1,98 @@
+/* ─── Theme Overrides and Toggle Switch ─── */
+
+/* 
+   Variable definitions are now handled in tokens.css 
+   We only keep component-specific theme logic here.
+*/
+
+/* Base transitions for theme switching */
+body, 
+header, 
+.settings-panel, 
+.side-panel, 
+.dashboard-wrap, 
+.dash-section, 
+.agent-card, 
+.log-area, 
+.story-input, 
+.folder-bar, 
+.mode-select, 
+.run-btn, 
+.browse-btn {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Ensure body uses our background tokens */
+body {
+    background-color: var(--darker);
+    color: var(--text);
+}
+
+/* Toggle Switch Styles */
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theme-label {
+    font-size: 10px;
+    font-weight: bold;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+}
+
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--panel-border);
+    transition: .4s;
+    border-radius: 22px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--accent);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(22px);
+    background-color: var(--darker);
+}
+
+/* Light theme slider specific overrides if needed */
+body.theme-light .slider:before {
+    background-color: var(--accent);
+}
+
+body.theme-light input:checked + .slider:before {
+    background-color: var(--darker); /* In light theme, dark is white */
+}

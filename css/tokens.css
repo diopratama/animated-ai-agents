@@ -1,0 +1,69 @@
+/* ─── Design System Tokens ─── */
+
+:root {
+    /* Default Dark Theme (Black & Yellow) - From Design Spec */
+    --theme-dark-bg: #050505;
+    --theme-dark-bg-alt: #121200;
+    --theme-dark-panel: #1a1a00;
+    --theme-dark-panel-border: #4d4d00;
+    --theme-dark-accent: #ffd700;
+    --theme-dark-accent-rgb: 255, 215, 0;
+    --theme-dark-accent-alt: #ccac00;
+    --theme-dark-text: #ffffcc;
+    --theme-dark-muted: #999900;
+
+    /* Light Theme (White & Brown) - From Design Spec */
+    --theme-light-bg: #ffffff;
+    --theme-light-bg-alt: #fdf5e6;
+    --theme-light-panel: #f5deb3;
+    --theme-light-panel-border: #d2b48c;
+    --theme-light-accent: #8b4513;
+    --theme-light-accent-rgb: 139, 69, 19;
+    --theme-light-accent-alt: #a0522d;
+    --theme-light-text: #3e2723;
+    --theme-light-muted: #795548;
+
+    /* Isometric Grid Tokens */
+    --iso-tile-width: 64px;
+    --iso-tile-height: 32px;
+    --iso-tile-ratio: 2; /* Width / Height */
+    --iso-agent-width: 32px;
+    --iso-agent-height: 48px;
+    --iso-desk-width: 64px;
+    --iso-desk-height: 64px;
+    --iso-grid-gap: 4px;
+
+    /* Common Tokens */
+    --green: #43e97b;
+    --red: #e74c3c;
+    --blue: #4facfe;
+    --purple: #a29bfe;
+    --orange: #fd9644;
+    --cyan: #00cec9;
+    --yellow: #f9ca24;
+}
+
+/* Theme Mappings */
+body.theme-dark {
+    --darker: var(--theme-dark-bg);
+    --dark: var(--theme-dark-bg-alt);
+    --panel: var(--theme-dark-panel);
+    --panel-border: var(--theme-dark-panel-border);
+    --accent: var(--theme-dark-accent);
+    --accent-rgb: var(--theme-dark-accent-rgb);
+    --accent2: var(--theme-dark-accent-alt);
+    --text: var(--theme-dark-text);
+    --muted: var(--theme-dark-muted);
+}
+
+body.theme-light {
+    --darker: var(--theme-light-bg);
+    --dark: var(--theme-light-bg-alt);
+    --panel: var(--theme-light-panel);
+    --panel-border: var(--theme-light-panel-border);
+    --accent: var(--theme-light-accent);
+    --accent-rgb: var(--theme-light-accent-rgb);
+    --accent2: var(--theme-light-accent-alt);
+    --text: var(--theme-light-text);
+    --muted: var(--theme-light-muted);
+}

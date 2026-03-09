@@ -40,7 +40,7 @@
 
 .agent-card.active {
     border-color: var(--accent);
-    box-shadow: 0 0 14px rgba(108, 99, 255, .35);
+    box-shadow: 0 0 14px rgba(var(--accent-rgb), .35);
 }
 
 .agent-card.done {
@@ -74,7 +74,7 @@
 }
 
 .agent-status.working {
-    color: var(--yellow);
+    color: var(--accent);
 }
 
 .agent-status.done {
@@ -107,7 +107,7 @@
 
 .agent-btn {
     border: 1px solid var(--panel-border);
-    background: #101025;
+    background: var(--darker);
     color: var(--muted);
     border-radius: 5px;
     font-size: 9px;

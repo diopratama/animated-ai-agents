@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pixel Agents — AI Dev Team</title>
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/image-upload.css" />
+    <link rel="stylesheet" href="css/isometric-ui.css" />
 </head>
 
 <body>
@@ -18,6 +21,13 @@
             <div class="tab" onclick="switchTab('settings')">SETTINGS</div>
         </div>
         <div class="spacer"></div>
+        <div class="theme-switch-wrapper">
+            <span class="theme-label" id="themeLabel">DARK</span>
+            <label class="theme-switch">
+                <input type="checkbox" id="themeToggle" onchange="toggleTheme(event)">
+                <span class="slider"></span>
+            </label>
+        </div>
         <div class="status-dot" id="geminiStatusDot"></div>
         <span style="font-size:11px;color:var(--muted);" id="geminiStatusText">Checking Gemini...</span>
     </header>
@@ -27,7 +37,7 @@
 
         <!-- Canvas + Input -->
         <div class="canvas-wrap">
-            <canvas id="pixelCanvas" width="960" height="400"></canvas>
+            <canvas id="pixelCanvas" width="1024" height="600"></canvas>
 
             <div class="story-input-wrap">
                 <div class="mode-row">
@@ -39,10 +49,14 @@
                 </div>
                 <div class="story-row">
                     <div class="story-input-area">
-                        <textarea id="storyInput" class="story-input" rows="2"
-                            placeholder="As a user I want to..."
+                        <textarea id="storyInput" class="story-input" rows="2" placeholder="As a user I want to..."
                             oninput="onStoryInputChanged()">As a user I want to</textarea>
+                        <div class="drop-hint">Drop images to upload</div>
                         <div class="paste-zone" id="pasteZone" style="display:none">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="paste-zone-label" id="pasteZoneLabel">REFERENCE IMAGES (0)</span>
+                                <button class="clear-images-btn" onclick="clearAllImages()">CLEAR ALL</button>
+                            </div>
                             <div class="paste-previews" id="pastePreviews"></div>
                         </div>
                     </div>
@@ -51,8 +65,19 @@
                             <select id="fixAgent" class="fix-agent-select" onchange="onFixAgentManualChange()"></select>
                             <span class="fix-auto-tag" id="fixAutoTag">🎯 auto</span>
                         </div>
-                        <button class="run-btn" id="runBtn" onclick="startPipeline()">▶ RUN ALL</button>
-                        <button class="run-btn stop-pipeline-btn" id="stopPipelineBtn" onclick="stopPipeline()" style="display:none">⏹ STOP</button>
+                        <input type="file" id="imageUpload" accept="image/*" multiple style="display:none"
+                            onchange="onImageUpload(event)" />
+                        <div style="display:flex;gap:6px;">
+                            <button class="run-btn upload-btn" id="uploadBtn"
+                                onclick="document.getElementById('imageUpload').click()"
+                                title="Upload reference images">
+                                📎 <span class="btn-text" style="font-size:8px;margin-left:2px;">REF</span>
+                            </button>
+                            <button class="run-btn" id="runBtn" onclick="startPipeline()" style="flex:1">▶ RUN
+                                ALL</button>
+                        </div>
+                        <button class="run-btn stop-pipeline-btn" id="stopPipelineBtn" onclick="stopPipeline()"
+                            style="display:none">⏹ STOP</button>
                     </div>
                 </div>
                 <!-- Hidden folder picker input -->
@@ -67,8 +92,7 @@
                             placeholder="Select a folder or type a path…" oninput="onPathTyped()" spellcheck="false" />
                         <button class="folder-clear" id="clearBtn" onclick="clearFolder()" title="Clear">×</button>
                     </div>
-                    <button class="browse-btn" onclick="openFolderBrowser()"
-                        title="Browse for folder">
+                    <button class="browse-btn" onclick="openFolderBrowser()" title="Browse for folder">
                         <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M2 5a2 2 0 012-2h3.586A2 2 0 019 3.586L10.414 5H16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" />
@@ -77,7 +101,8 @@
                     </button>
                 </div>
                 <div class="folder-hint">
-                    <span>ⓘ</span> Picked folders fill the field with folder name only. Type the full path manually if needed, or set a
+                    <span>ⓘ</span> Picked folders fill the field with folder name only. Type the full path manually if
+                    needed, or set a
                     default in <code>project.config.md</code>.
                 </div>
             </div>
@@ -140,8 +165,10 @@
             <div class="side-panel-header" style="display:flex;align-items:center;justify-content:space-between;">
                 <span>🤖 AGENT TEAM</span>
                 <div style="display:flex;gap:6px;">
-                    <button class="bulk-btn bulk-start" id="startAllBtn" onclick="startAllAgents()" title="Start all agents">▶ Start All</button>
-                    <button class="bulk-btn bulk-stop" id="stopAllBtn" onclick="stopAllAgents()" title="Stop all agents">⏹ Stop All</button>
+                    <button class="bulk-btn bulk-start" id="startAllBtn" onclick="startAllAgents()"
+                        title="Start all agents">▶ Start All</button>
+                    <button class="bulk-btn bulk-stop" id="stopAllBtn" onclick="stopAllAgents()"
+                        title="Stop all agents">⏹ Stop All</button>
                 </div>
             </div>
 
@@ -159,12 +186,29 @@
     <div class="settings-panel" id="settingsPanel">
 
         <div class="settings-section">
+            <div class="settings-section-title">THEME</div>
+            <div class="settings-section-body">
+                <div class="setting-field">
+                    <span class="sf-emoji">🌗</span>
+                    <span class="sf-label">Theme (Dark / Light)</span>
+                    <div class="theme-switch-wrapper">
+                        <label class="theme-switch" for="themeCheckbox">
+                            <input type="checkbox" id="themeCheckbox" onchange="toggleTheme(event)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
             <div class="settings-section-title">PORTAL NAME</div>
             <div class="settings-section-body">
                 <div class="setting-field">
                     <span class="sf-emoji">⚡</span>
                     <span class="sf-label">Portal Name</span>
-                    <input type="text" id="portalNameInput" value="AGENTS CORPORATION" placeholder="AGENTS CORPORATION" spellcheck="false" />
+                    <input type="text" id="portalNameInput" value="AGENTS CORPORATION" placeholder="AGENTS CORPORATION"
+                        spellcheck="false" />
                 </div>
             </div>
         </div>
@@ -210,7 +254,8 @@
                         <option value="gemini-3-pro-preview">Gemini 3 Pro (Preview) — most capable</option>
                     </select>
                 </div>
-                <div class="model-hint">Select a model when your premium quota is exhausted. "Auto" lets Gemini CLI choose the best model for each task. Use Pro for complex reasoning, Flash for speed.</div>
+                <div class="model-hint">Select a model when your premium quota is exhausted. "Auto" lets Gemini CLI
+                    choose the best model for each task. Use Pro for complex reasoning, Flash for speed.</div>
             </div>
         </div>
 

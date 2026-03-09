@@ -1,5 +1,18 @@
 .git
 .github
+node_modules
 backend/node_modules
 backend/npm-debug.log
 .env
+.env.local
+.DS_Store
+
+# Ignore docs but keep role definitions and context
+docs/
+!agents/*.md
+!GEMINI.md
+!project.config.md
+
+_references
+uploads/*
+!uploads/.gitkeep

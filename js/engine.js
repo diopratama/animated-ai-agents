@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-//  PIXEL ART ENGINE — Pixel Agents Style
+//  PIXEL ART ENGINE — Isometric "Game Dev Story" Style
 // ═══════════════════════════════════════════════════════
 
 const canvas = document.getElementById('pixelCanvas');
@@ -8,8 +8,11 @@ ctx.imageSmoothingEnabled = false;
 
 const W = canvas.width;
 const H = canvas.height;
-const MAP_COLS = Math.floor(W / TILE);
-const MAP_ROWS = Math.floor(H / TILE);
+
+// Isometric Constants
+const ISO_OFFSET_X = W / 2;
+const ISO_OFFSET_Y = 80;
+const MAP_SIZE = 16;
 
 const FLOOR_COL = {
     [TL.VOID]: '#0a0a14', [TL.WOOD]: '#8a6a42',
@@ -19,32 +22,31 @@ const FLOOR_COL2 = {
     [TL.VOID]: '#0a0a14', [TL.WOOD]: '#7a5c38',
     [TL.BEIGE]: '#bfb090', [TL.BLUE]: '#254060', [TL.CORR]: '#343440',
 };
-const WALL_COL = {
-    [TL.WOOD]:  { top: '#4a3020', side: '#3a2418' },
-    [TL.BEIGE]: { top: '#9a8a78', side: '#8a7a6a' },
-    [TL.BLUE]:  { top: '#1e3050', side: '#182840' },
-    [TL.CORR]:  { top: '#2a2a30', side: '#222228' },
-};
+
+// Isometric Math
+function cartToIso(col, row) {
+    return {
+        x: ISO_OFFSET_X + (col - row) * (ISO_TILE_W / 2),
+        y: ISO_OFFSET_Y + (col + row) * (ISO_TILE_H / 2)
+    };
+}
 
 // ─── Tilemap ───
 
 const ROOM_DEFS = [
-    { col: 1,  row: 1, w: 8, h: 4, floor: TL.WOOD  },
-    { col: 1,  row: 7, w: 8, h: 4, floor: TL.WOOD  },
-    { col: 10, row: 1, w: 6, h: 5, floor: TL.BEIGE },
-    { col: 17, row: 1, w: 5, h: 5, floor: TL.BEIGE },
-    { col: 23, row: 1, w: 6, h: 5, floor: TL.BEIGE },
-    { col: 23, row: 7, w: 6, h: 4, floor: TL.BLUE  },
-    { col: 10, row: 7, w: 8, h: 4, floor: TL.BEIGE },
+    { col: 0, row: 0, w: 10, h: 10, floor: TL.BEIGE }, // Main Office
+    { col: 10, row: 0, w: 6, h: 7, floor: TL.BLUE },   // Gym
+    { col: 10, row: 7, w: 6, h: 9, floor: TL.WOOD },   // Pantry/Cafe
+    { col: 0, row: 10, w: 10, h: 6, floor: TL.CORR },  // Gaming/Lounge
 ];
 
 function createTilemap() {
-    const map = new Array(MAP_COLS * MAP_ROWS).fill(TL.CORR);
+    const map = new Array(MAP_SIZE * MAP_SIZE).fill(TL.VOID);
     for (const r of ROOM_DEFS) {
         for (let row = r.row; row < r.row + r.h; row++)
             for (let col = r.col; col < r.col + r.w; col++)
-                if (row < MAP_ROWS && col < MAP_COLS)
-                    map[row * MAP_COLS + col] = r.floor;
+                if (row < MAP_SIZE && col < MAP_SIZE)
+                    map[row * MAP_SIZE + col] = r.floor;
     }
     return map;
 }
@@ -53,51 +55,63 @@ const tilemap = createTilemap();
 // ─── Furniture ───
 
 const FURN_META = {
-    DESK:      { w: 2, h: 1, blocks: true  },
-    BOOKSHELF: { w: 1, h: 1, blocks: true  },
-    PLANT:     { w: 1, h: 1, blocks: true  },
-    COOLER:    { w: 1, h: 1, blocks: true  },
-    CHAIR:     { w: 1, h: 1, blocks: false },
+    DESK_U: { w: 1, h: 1, blocks: true },
+    DESK_D: { w: 1, h: 1, blocks: true },
+    BOOKSHELF: { w: 1, h: 1, blocks: true },
+    PLANT: { w: 1, h: 1, blocks: true },
+    COOLER: { w: 1, h: 1, blocks: true },
+    CHAIR: { w: 1, h: 1, blocks: false },
+    VENDING: { w: 1, h: 1, blocks: true },
+    ARCADE: { w: 1, h: 1, blocks: true },
+    SOFA: { w: 1, h: 1, blocks: false },
+    GYM_BENCH: { w: 1, h: 1, blocks: true },
+    TREADMILL: { w: 1, h: 1, blocks: true },
+    COFFEE: { w: 1, h: 1, blocks: true },
 };
 
 const furniture = [
-    { type: 'DESK', col: 2, row: 2 }, { type: 'CHAIR', col: 3, row: 3 },
-    { type: 'DESK', col: 6, row: 2 }, { type: 'CHAIR', col: 7, row: 3 },
-    { type: 'BOOKSHELF', col: 1, row: 1 }, { type: 'BOOKSHELF', col: 8, row: 1 },
-    { type: 'PLANT', col: 1, row: 4 }, { type: 'PLANT', col: 8, row: 4 },
+    // --- Office: Face-to-Face Horizontal Banks ---
+    // Row 1 agents (face DOWN), Desks at row 2
+    { type: 'CHAIR', col: 2, row: 1 }, { type: 'DESK_D', col: 2, row: 2 },
+    { type: 'CHAIR', col: 3, row: 1 }, { type: 'DESK_D', col: 3, row: 2 },
+    { type: 'CHAIR', col: 4, row: 1 }, { type: 'DESK_D', col: 4, row: 2 },
+    { type: 'CHAIR', col: 5, row: 1 }, { type: 'DESK_D', col: 5, row: 2 },
+    { type: 'CHAIR', col: 6, row: 1 }, { type: 'DESK_D', col: 6, row: 2 },
+    { type: 'CHAIR', col: 7, row: 1 }, { type: 'DESK_D', col: 7, row: 2 },
 
-    { type: 'DESK', col: 2, row: 8 }, { type: 'CHAIR', col: 3, row: 9 },
-    { type: 'DESK', col: 6, row: 8 }, { type: 'CHAIR', col: 7, row: 9 },
-    { type: 'BOOKSHELF', col: 1, row: 7 }, { type: 'BOOKSHELF', col: 8, row: 7 },
-    { type: 'PLANT', col: 1, row: 10 }, { type: 'PLANT', col: 8, row: 10 },
+    // Row 4 agents (face UP), Desks at row 3
+    { type: 'CHAIR', col: 2, row: 4 }, { type: 'DESK_U', col: 2, row: 3 },
+    { type: 'CHAIR', col: 3, row: 4 }, { type: 'DESK_U', col: 3, row: 3 },
+    { type: 'CHAIR', col: 4, row: 4 }, { type: 'DESK_U', col: 4, row: 3 },
+    { type: 'CHAIR', col: 5, row: 4 }, { type: 'DESK_U', col: 5, row: 3 },
+    { type: 'CHAIR', col: 6, row: 4 }, { type: 'DESK_U', col: 6, row: 3 },
 
-    { type: 'DESK', col: 12, row: 2 }, { type: 'CHAIR', col: 13, row: 3 },
-    { type: 'PLANT', col: 10, row: 1 }, { type: 'PLANT', col: 15, row: 1 },
+    // --- Gym Area ---
+    { type: 'TREADMILL', col: 11, row: 1 }, { type: 'TREADMILL', col: 12, row: 1 },
+    { type: 'GYM_BENCH', col: 11, row: 3 }, { type: 'GYM_BENCH', col: 12, row: 3 },
+    { type: 'COOLER', col: 14, row: 1 },
 
-    { type: 'DESK', col: 18, row: 2 }, { type: 'CHAIR', col: 19, row: 3 },
-    { type: 'PLANT', col: 17, row: 1 }, { type: 'PLANT', col: 21, row: 1 },
+    // --- Pantry Area ---
+    { type: 'COFFEE', col: 14, row: 8 },
+    { type: 'VENDING', col: 14, row: 10 },
+    { type: 'SOFA', col: 11, row: 12 }, { type: 'SOFA', col: 12, row: 12 },
+    { type: 'PLANT', col: 10, row: 14 },
 
-    { type: 'DESK', col: 24, row: 2 }, { type: 'CHAIR', col: 25, row: 3 },
-    { type: 'DESK', col: 26, row: 2 }, { type: 'CHAIR', col: 27, row: 3 },
-    { type: 'PLANT', col: 23, row: 1 }, { type: 'PLANT', col: 28, row: 1 },
+    // --- Gaming Lounge ---
+    { type: 'ARCADE', col: 1, row: 13 }, { type: 'ARCADE', col: 2, row: 13 },
+    { type: 'SOFA', col: 5, row: 13 }, { type: 'SOFA', col: 6, row: 13 },
+    { type: 'PLANT', col: 8, row: 11 },
 
-    { type: 'DESK', col: 24, row: 8 }, { type: 'CHAIR', col: 25, row: 9 },
-    { type: 'BOOKSHELF', col: 23, row: 7 }, { type: 'BOOKSHELF', col: 28, row: 7 },
-    { type: 'PLANT', col: 23, row: 10 }, { type: 'PLANT', col: 28, row: 10 },
-
-    { type: 'DESK', col: 11, row: 8 }, { type: 'CHAIR', col: 12, row: 9 },
-    { type: 'DESK', col: 15, row: 8 }, { type: 'CHAIR', col: 16, row: 9 },
-    { type: 'BOOKSHELF', col: 10, row: 7 }, { type: 'BOOKSHELF', col: 17, row: 7 },
-    { type: 'PLANT', col: 10, row: 10 }, { type: 'PLANT', col: 17, row: 10 },
+    // Generic Props
+    { type: 'BOOKSHELF', col: 0, row: 1 }, { type: 'BOOKSHELF', col: 0, row: 2 },
+    { type: 'BOOKSHELF', col: 0, row: 3 }, { type: 'BOOKSHELF', col: 0, row: 4 },
 ];
 
 const blockedTiles = new Set();
 for (const f of furniture) {
     const def = FURN_META[f.type];
     if (def && def.blocks) {
-        for (let r = 0; r < (def.h || 1); r++)
-            for (let c = 0; c < (def.w || 1); c++)
-                blockedTiles.add(`${f.col + c},${f.row + r}`);
+        blockedTiles.add(`${f.col},${f.row}`);
     }
 }
 
@@ -109,15 +123,15 @@ function spx(cx, x, y, w, h, col) {
 }
 
 function drawCharShadow(cx) {
-    cx.fillStyle = 'rgba(0,0,0,0.22)';
+    cx.fillStyle = 'rgba(0,0,0,0.15)';
     cx.beginPath();
-    cx.ellipse(16, 42, 10, 3, 0, 0, Math.PI * 2);
+    cx.ellipse(16, 42, 10, 4, 0, 0, Math.PI * 2);
     cx.fill();
 }
 
 function makeFrame(drawFn) {
     const c = document.createElement('canvas');
-    c.width = 32; c.height = 48;
+    c.width = 30; c.height = 46;
     const cx = c.getContext('2d');
     cx.imageSmoothingEnabled = false;
     drawFn(cx);
@@ -138,18 +152,22 @@ function makeWalkDown(p) {
     function frame(ls) {
         return makeFrame(cx => {
             drawCharShadow(cx);
-            spx(cx, 3, 0, 10, 3, p.hair);
-            spx(cx, 3, 2, 10, 7, p.skin);
-            spx(cx, 3, 0, 10, 4, p.hair);
-            spx(cx, 5, 5, 2, 2, '#FFF'); spx(cx, 9, 5, 2, 2, '#FFF');
-            spx(cx, 6, 5, 1, 1, '#222'); spx(cx, 10, 5, 1, 1, '#222');
-            spx(cx, 6, 9, 4, 1, p.skin);
-            spx(cx, 3, 10, 10, 4, p.shirt);
-            spx(cx, 1, 10, 2, 5, p.skin);
-            spx(cx, 13, 10, 2, 5, p.skin);
-            spx(cx, 5 + ls, 14, 3, 5, p.pants);
-            spx(cx, 8 - ls, 14, 3, 5, p.pants);
-            spx(cx, 5 + ls, 19, 3, 2, p.shoes);
+            // Hair
+            spx(cx, 3, 0, 9, 3, p.hair);
+            spx(cx, 3, 0, 9, 2, p.hair);
+            // Face
+            spx(cx, 3, 2, 9, 7, p.skin);
+            // Eyes
+            spx(cx, 4, 5, 2, 2, '#FFF'); spx(cx, 9, 5, 2, 2, '#FFF');
+            spx(cx, 5, 5, 1, 1, '#111'); spx(cx, 10, 5, 1, 1, '#111');
+            // Shirt
+            spx(cx, 2, 9, 11, 4, p.shirt);
+            spx(cx, 1, 10, 2, 5, p.skin); // Arms
+            spx(cx, 12, 10, 2, 5, p.skin);
+            // Legs
+            spx(cx, 4 + ls, 13, 3, 6, p.pants);
+            spx(cx, 8 - ls, 13, 3, 6, p.pants);
+            spx(cx, 4 + ls, 19, 3, 2, p.shoes);
             spx(cx, 8 - ls, 19, 3, 2, p.shoes);
         });
     }
@@ -160,14 +178,17 @@ function makeWalkUp(p) {
     function frame(ls) {
         return makeFrame(cx => {
             drawCharShadow(cx);
-            spx(cx, 3, 0, 10, 8, p.hair);
-            spx(cx, 4, 7, 8, 2, p.skin);
-            spx(cx, 3, 9, 10, 5, p.shirt);
+            // Hair
+            spx(cx, 3, 0, 9, 8, p.hair);
+            spx(cx, 4, 7, 7, 2, p.skin);
+            // Shirt
+            spx(cx, 2, 9, 11, 5, p.shirt);
             spx(cx, 1, 10, 2, 4, p.skin);
-            spx(cx, 13, 10, 2, 4, p.skin);
-            spx(cx, 5 + ls, 14, 3, 5, p.pants);
+            spx(cx, 12, 10, 2, 4, p.skin);
+            // Legs
+            spx(cx, 4 + ls, 14, 3, 5, p.pants);
             spx(cx, 8 - ls, 14, 3, 5, p.pants);
-            spx(cx, 5 + ls, 19, 3, 2, p.shoes);
+            spx(cx, 4 + ls, 19, 3, 2, p.shoes);
             spx(cx, 8 - ls, 19, 3, 2, p.shoes);
         });
     }
@@ -178,18 +199,20 @@ function makeWalkRight(p) {
     function frame(ls) {
         return makeFrame(cx => {
             drawCharShadow(cx);
-            spx(cx, 5, 0, 7, 3, p.hair);
-            spx(cx, 4, 2, 9, 7, p.skin);
-            spx(cx, 4, 0, 9, 4, p.hair);
-            spx(cx, 10, 5, 2, 2, '#FFF');
-            spx(cx, 11, 5, 1, 1, '#222');
-            spx(cx, 7, 9, 4, 1, p.skin);
-            spx(cx, 4, 10, 8, 4, p.shirt);
-            spx(cx, 12, 10, 2, 5, p.skin);
-            spx(cx, 5, 14, 3, 5, p.pants);
-            spx(cx, 8 + ls, 14, 3, 5, p.pants);
-            spx(cx, 5, 19, 3, 2, p.shoes);
-            spx(cx, 8 + ls, 19, 3, 2, p.shoes);
+            // Hair
+            spx(cx, 4, 0, 6, 3, p.hair);
+            spx(cx, 4, 0, 7, 2, p.hair);
+            // Face
+            spx(cx, 4, 2, 8, 7, p.skin);
+            spx(cx, 9, 5, 2, 2, '#FFF'); spx(cx, 10, 5, 1, 1, '#111');
+            // Shirt
+            spx(cx, 4, 9, 8, 5, p.shirt);
+            spx(cx, 11, 10, 2, 5, p.skin);
+            // Legs
+            spx(cx, 4, 14, 3, 5, p.pants);
+            spx(cx, 7 + ls, 14, 3, 5, p.pants);
+            spx(cx, 4, 19, 3, 2, p.shoes);
+            spx(cx, 7 + ls, 19, 3, 2, p.shoes);
         });
     }
     return [frame(-1), frame(0), frame(1), frame(0)];
@@ -199,18 +222,19 @@ function makeTypeDown(p) {
     function frame(ao) {
         return makeFrame(cx => {
             drawCharShadow(cx);
-            spx(cx, 3, 0, 10, 3, p.hair);
-            spx(cx, 3, 2, 10, 7, p.skin);
-            spx(cx, 3, 0, 10, 4, p.hair);
-            spx(cx, 5, 5, 2, 2, '#FFF'); spx(cx, 9, 5, 2, 2, '#FFF');
-            spx(cx, 6, 5, 1, 1, '#222'); spx(cx, 10, 5, 1, 1, '#222');
-            spx(cx, 6, 9, 4, 1, p.skin);
-            spx(cx, 3, 10, 10, 4, p.shirt);
-            spx(cx, 1 + ao, 12, 2, 3, p.skin);
-            spx(cx, 13 - ao, 12, 2, 3, p.skin);
-            spx(cx, 4, 14, 8, 3, p.pants);
-            spx(cx, 4, 17, 3, 2, p.shoes);
-            spx(cx, 9, 17, 3, 2, p.shoes);
+            // Head
+            spx(cx, 3, 0, 9, 3, p.hair);
+            spx(cx, 3, 2, 9, 7, p.skin);
+            spx(cx, 4, 5, 2, 2, '#FFF'); spx(cx, 9, 5, 2, 2, '#FFF');
+            spx(cx, 5, 5, 1, 1, '#111'); spx(cx, 10, 5, 1, 1, '#111');
+            // Shirt
+            spx(cx, 2, 9, 11, 4, p.shirt);
+            // Hands on table
+            spx(cx, 2 + ao, 12, 3, 3, p.skin);
+            spx(cx, 10 - ao, 12, 3, 3, p.skin);
+            // Sitting
+            spx(cx, 3, 14, 9, 3, p.pants);
+            spx(cx, 3, 17, 3, 2, p.shoes); spx(cx, 9, 17, 3, 2, p.shoes);
         });
     }
     return [frame(0), frame(1)];
@@ -220,14 +244,13 @@ function makeTypeUp(p) {
     function frame(ao) {
         return makeFrame(cx => {
             drawCharShadow(cx);
-            spx(cx, 3, 0, 10, 8, p.hair);
-            spx(cx, 4, 7, 8, 2, p.skin);
-            spx(cx, 3, 9, 10, 5, p.shirt);
-            spx(cx, 1 + ao, 11, 2, 4, p.skin);
-            spx(cx, 13 - ao, 11, 2, 4, p.skin);
-            spx(cx, 4, 14, 8, 3, p.pants);
-            spx(cx, 4, 17, 3, 2, p.shoes);
-            spx(cx, 9, 17, 3, 2, p.shoes);
+            spx(cx, 3, 0, 9, 8, p.hair);
+            spx(cx, 4, 7, 7, 2, p.skin);
+            spx(cx, 2, 9, 11, 5, p.shirt);
+            spx(cx, 2 + ao, 11, 3, 4, p.skin);
+            spx(cx, 10 - ao, 11, 3, 4, p.skin);
+            spx(cx, 3, 14, 9, 3, p.pants);
+            spx(cx, 3, 17, 3, 2, p.shoes); spx(cx, 9, 17, 3, 2, p.shoes);
         });
     }
     return [frame(0), frame(1)];
@@ -240,112 +263,270 @@ function makeCharSprites(palette) {
     const wl = wr.map(flipCanvas);
     const td = makeTypeDown(palette);
     const tu = makeTypeUp(palette);
-    const tr = td;
-    const tl = td.map(flipCanvas);
     return {
         walk: { [DIR.DOWN]: wd, [DIR.UP]: wu, [DIR.RIGHT]: wr, [DIR.LEFT]: wl },
-        type: { [DIR.DOWN]: td, [DIR.UP]: tu, [DIR.RIGHT]: tr, [DIR.LEFT]: tl },
+        type: { [DIR.DOWN]: td, [DIR.UP]: tu, [DIR.RIGHT]: td, [DIR.LEFT]: flipCanvas(td[0]) },
     };
 }
 
 // ─── Furniture Sprites ───
 
-function makeDeskSprite() {
+function makeIsoDesk(dir) {
     const c = document.createElement('canvas');
-    c.width = 64; c.height = 32;
+    c.width = 64; c.height = 64;
     const cx = c.getContext('2d');
     cx.imageSmoothingEnabled = false;
-    cx.fillStyle = '#8B6914'; cx.fillRect(0, 8, 64, 12);
-    cx.fillStyle = '#A07818'; cx.fillRect(2, 10, 60, 8);
-    cx.fillStyle = '#6B4E0A';
-    cx.fillRect(4, 20, 6, 10); cx.fillRect(54, 20, 6, 10);
-    cx.fillStyle = '#0d1b2a'; cx.fillRect(22, 0, 20, 10);
-    cx.fillStyle = '#2266aa'; cx.fillRect(24, 2, 16, 6);
-    cx.fillStyle = '#4facfe';
-    cx.fillRect(26, 3, 8, 1); cx.fillRect(26, 5, 12, 1); cx.fillRect(26, 7, 6, 1);
-    cx.fillStyle = '#333'; cx.fillRect(30, 10, 4, 4);
+
+    // Metal Legs
+    cx.fillStyle = '#4b5563';
+    cx.fillRect(12, 34, 2, 16);
+    cx.fillRect(50, 18, 2, 16);
+    cx.fillRect(31, 42, 2, 16);
+
+    // Table Top (Light Gray)
+    cx.fillStyle = '#f3f4f6';
+    cx.beginPath();
+    cx.moveTo(32, 28); cx.lineTo(64, 12); cx.lineTo(32, -4); cx.lineTo(0, 12);
+    cx.closePath(); cx.fill();
+
+    // Edge (Depth)
+    cx.fillStyle = '#d1d5db';
+    cx.beginPath();
+    cx.moveTo(0, 12); cx.lineTo(32, 28); cx.lineTo(32, 34); cx.lineTo(0, 18);
+    cx.closePath(); cx.fill();
+    cx.fillStyle = '#9ca3af';
+    cx.beginPath();
+    cx.moveTo(32, 28); cx.lineTo(64, 12); cx.lineTo(64, 18); cx.lineTo(32, 34);
+    cx.closePath(); cx.fill();
+
+    if (dir === DIR.UP) { // Monitor at top-left/top-right edges, faces bottom-left
+        // Monitor Stand
+        cx.fillStyle = '#111827';
+        cx.fillRect(24, 6, 4, 4);
+        // Monitor Screen
+        cx.fillStyle = '#111827';
+        cx.beginPath();
+        cx.moveTo(10, 8); cx.lineTo(34, 20); cx.lineTo(34, 5); cx.lineTo(10, -7);
+        cx.closePath(); cx.fill();
+        // Screen Glow
+        cx.fillStyle = '#374151';
+        cx.beginPath();
+        cx.moveTo(12, 8); cx.lineTo(32, 18); cx.lineTo(32, 6); cx.lineTo(12, -4);
+        cx.closePath(); cx.fill();
+        // Keyboard
+        cx.fillStyle = '#374151';
+        cx.fillRect(22, 20, 12, 6);
+    } else { // dir === DIR.DOWN
+        // Monitor Stand
+        cx.fillStyle = '#111827';
+        cx.fillRect(38, 6, 4, 4);
+        // Monitor Screen
+        cx.fillStyle = '#111827';
+        cx.beginPath();
+        cx.moveTo(56, 8); cx.lineTo(32, 20); cx.lineTo(32, 5); cx.lineTo(56, -7);
+        cx.closePath(); cx.fill();
+        // Screen Glow
+        cx.fillStyle = '#374151';
+        cx.beginPath();
+        cx.moveTo(54, 8); cx.lineTo(34, 18); cx.lineTo(34, 6); cx.lineTo(54, -4);
+        cx.closePath(); cx.fill();
+        // Keyboard
+        cx.fillStyle = '#374151';
+        cx.fillRect(34, 20, 12, 6);
+    }
+
     return c;
 }
 
-function makeBookshelfSprite() {
+function makeIsoBookshelf() {
     const c = document.createElement('canvas');
-    c.width = 32; c.height = 48;
+    c.width = 48; c.height = 80;
     const cx = c.getContext('2d');
     cx.imageSmoothingEnabled = false;
-    cx.fillStyle = '#5c4033'; cx.fillRect(0, 0, 32, 48);
-    cx.fillStyle = '#6b5040'; cx.fillRect(2, 2, 28, 44);
-    cx.fillStyle = '#5c4033';
-    cx.fillRect(0, 14, 32, 3); cx.fillRect(0, 28, 32, 3);
-    cx.fillStyle = '#cc4444'; cx.fillRect(4, 3, 4, 10);
-    cx.fillStyle = '#4488cc'; cx.fillRect(9, 4, 4, 9);
-    cx.fillStyle = '#44aa66'; cx.fillRect(14, 3, 3, 10);
-    cx.fillStyle = '#aa55cc'; cx.fillRect(18, 5, 4, 8);
-    cx.fillStyle = '#ccaa33'; cx.fillRect(23, 3, 4, 10);
-    cx.fillStyle = '#ff8844'; cx.fillRect(4, 18, 5, 9);
-    cx.fillStyle = '#5588cc'; cx.fillRect(10, 17, 4, 10);
-    cx.fillStyle = '#cc6688'; cx.fillRect(15, 19, 3, 8);
-    cx.fillStyle = '#66ccaa'; cx.fillRect(19, 17, 4, 10);
-    cx.fillStyle = '#7a6a5a';
-    cx.fillRect(5, 33, 10, 10); cx.fillRect(18, 35, 8, 8);
+
+    // Back Panel
+    cx.fillStyle = '#4b3621';
+    cx.fillRect(4, 0, 40, 80);
+
+    // Shelves
+    cx.fillStyle = '#6b4423';
+    for (let i = 0; i < 4; i++) {
+        cx.fillRect(4, 16 + i * 16, 40, 2);
+    }
+
+    // Books
+    const cols = ['#cc4444', '#4488cc', '#44aa66', '#aa55cc', '#ccaa33'];
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 6; j++) {
+            if (Math.random() < 0.8) {
+                cx.fillStyle = cols[(i + j) % cols.length];
+                cx.fillRect(8 + j * 6, 6 + i * 16, 5, 10);
+            }
+        }
+    }
     return c;
 }
 
-function makePlantSprite() {
+function makeIsoPlant() {
     const c = document.createElement('canvas');
-    c.width = 32; c.height = 32;
+    c.width = 30; c.height = 50;
     const cx = c.getContext('2d');
     cx.imageSmoothingEnabled = false;
-    cx.fillStyle = '#a06040'; cx.fillRect(10, 20, 12, 10);
-    cx.fillStyle = '#8a5030'; cx.fillRect(8, 18, 16, 4);
-    cx.fillStyle = '#2d6a4f';
-    cx.beginPath(); cx.ellipse(16, 12, 10, 10, 0, 0, Math.PI * 2); cx.fill();
-    cx.fillStyle = '#3d8a6f';
-    cx.beginPath(); cx.ellipse(12, 10, 5, 5, 0, 0, Math.PI * 2); cx.fill();
-    cx.beginPath(); cx.ellipse(20, 8, 4, 4, 0, 0, Math.PI * 2); cx.fill();
+
+    // Pot
+    cx.fillStyle = '#a16207'; cx.fillRect(8, 32, 14, 12);
+    // Tree Trunk
+    cx.fillStyle = '#422006'; cx.fillRect(13, 26, 4, 8);
+    // Leaves (Layered)
+    cx.fillStyle = '#064e3b';
+    cx.beginPath(); cx.arc(15, 20, 12, 0, Math.PI * 2); cx.fill();
+    cx.fillStyle = '#065f46';
+    cx.beginPath(); cx.arc(10, 16, 8, 0, Math.PI * 2); cx.fill();
+    cx.fillStyle = '#10b981';
+    cx.beginPath(); cx.arc(18, 12, 6, 0, Math.PI * 2); cx.fill();
+
     return c;
 }
 
-function makeCoolerSprite() {
+function makeIsoCoffee() {
     const c = document.createElement('canvas');
-    c.width = 32; c.height = 48;
+    c.width = 30; c.height = 30;
     const cx = c.getContext('2d');
     cx.imageSmoothingEnabled = false;
-    cx.fillStyle = '#ccc'; cx.fillRect(6, 16, 20, 28);
-    cx.fillStyle = '#e0e0e0'; cx.fillRect(8, 18, 16, 24);
-    cx.fillStyle = '#6699cc'; cx.fillRect(10, 0, 12, 18);
-    cx.fillStyle = '#88bbee'; cx.fillRect(12, 2, 8, 14);
-    cx.fillStyle = '#666'; cx.fillRect(18, 30, 6, 3);
-    cx.fillStyle = '#4488cc'; cx.fillRect(24, 29, 4, 5);
-    cx.fillStyle = '#999';
-    cx.fillRect(8, 44, 4, 4); cx.fillRect(20, 44, 4, 4);
+    cx.fillStyle = '#111'; cx.fillRect(8, 12, 14, 14); // Machine
+    cx.fillStyle = '#444'; cx.fillRect(10, 4, 10, 8);   // Top
+    cx.fillStyle = '#fff'; cx.fillRect(12, 18, 6, 6);   // Cup
+    return c;
+}
+
+function makeIsoArcade() {
+    const c = document.createElement('canvas');
+    c.width = 40; c.height = 70;
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+    cx.fillStyle = '#4f46e5'; cx.fillRect(4, 0, 32, 70); // Cabinet
+    cx.fillStyle = '#ffd700'; cx.fillRect(4, 0, 32, 8);  // Marquee
+    cx.fillStyle = '#000'; cx.fillRect(8, 12, 24, 20);   // Screen
+    // Joystick/Buttons
+    cx.fillStyle = '#ef4444'; cx.fillRect(12, 38, 4, 4);
+    cx.fillStyle = '#fff'; cx.fillRect(24, 38, 4, 4);
+    return c;
+}
+
+function makeIsoSofa() {
+    const c = document.createElement('canvas');
+    c.width = 50; c.height = 40;
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+    cx.fillStyle = '#1e3a8a'; cx.fillRect(0, 15, 50, 20); // Base
+    cx.fillStyle = '#1e40af'; cx.fillRect(0, 0, 50, 15);  // Back
+    cx.fillStyle = '#1e3a8a'; cx.fillRect(0, 10, 8, 15);  // Arm L
+    cx.fillStyle = '#1e3a8a'; cx.fillRect(42, 10, 8, 15); // Arm R
+    return c;
+}
+
+function makeIsoGymBench() {
+    const c = document.createElement('canvas');
+    c.width = 40; c.height = 30;
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+    cx.fillStyle = '#1f2937'; cx.fillRect(4, 10, 32, 12); // Padding
+    cx.fillStyle = '#64748b'; cx.fillRect(6, 22, 2, 8);   // Leg
+    cx.fillRect(32, 22, 2, 8);
+    // Barbell on rack if we wanted, but let's keep it simple
+    return c;
+}
+
+function makeIsoTreadmill() {
+    const c = document.createElement('canvas');
+    c.width = 40; c.height = 50;
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+    cx.fillStyle = '#334155'; cx.fillRect(4, 30, 32, 16); // Belt base
+    cx.fillStyle = '#1e293b'; cx.fillRect(6, 30, 28, 14); // Belt
+    cx.fillStyle = '#64748b'; cx.fillRect(6, 4, 2, 30);   // Handle L
+    cx.fillRect(32, 4, 2, 30);
+    cx.fillRect(6, 4, 28, 4); // Control panel
+    return c;
+}
+
+function makeIsoCooler() {
+    const c = document.createElement('canvas');
+    c.width = 30; c.height = 60;
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+
+    cx.fillStyle = '#e2e8f0'; cx.fillRect(4, 20, 22, 36); // Body
+    cx.fillStyle = '#3b82f6'; cx.fillRect(6, 4, 18, 16);  // Jug
+    cx.fillStyle = '#1d4ed8'; cx.fillRect(10, 8, 10, 10); // Water
+
+    return c;
+}
+
+function makeIsoVending() {
+    const c = document.createElement('canvas');
+    c.width = 44; c.height = 76;
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+
+    cx.fillStyle = '#b91c1c'; cx.fillRect(0, 0, 44, 76); // Cabinet
+    cx.fillStyle = '#111'; cx.fillRect(6, 10, 32, 44);   // Glass
+    cx.fillStyle = '#444'; cx.fillRect(6, 58, 32, 12);   // Dispenser
+
+    // Glowing drinks
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 4; j++) {
+            cx.fillStyle = ['#fbbf24', '#4ade80', '#f87171'][j % 3];
+            cx.fillRect(10 + i * 8, 14 + j * 10, 4, 6);
+        }
+    }
+
     return c;
 }
 
 function makeChairSprite() {
     const c = document.createElement('canvas');
-    c.width = 32; c.height = 32;
+    c.width = 32; c.height = 40;
     const cx = c.getContext('2d');
     cx.imageSmoothingEnabled = false;
-    cx.fillStyle = '#4a3060'; cx.fillRect(6, 10, 20, 16);
-    cx.fillStyle = '#5a4070'; cx.fillRect(8, 12, 16, 12);
-    cx.fillStyle = '#4a3060'; cx.fillRect(8, 4, 16, 8);
-    cx.fillStyle = '#3a2050'; cx.fillRect(10, 6, 12, 4);
-    cx.fillStyle = '#333';
-    cx.fillRect(6, 26, 4, 4); cx.fillRect(22, 26, 4, 4);
-    cx.fillRect(6, 10, 4, 4); cx.fillRect(22, 10, 4, 4);
+
+    // Swivel Base
+    cx.fillStyle = '#374151';
+    cx.fillRect(10, 32, 12, 2);
+    cx.fillRect(15, 26, 2, 6);
+
+    // Cushion
+    cx.fillStyle = '#1f2937';
+    cx.fillRect(6, 18, 20, 10);
+
+    // Armrests
+    cx.fillStyle = '#111827';
+    cx.fillRect(4, 16, 4, 8);
+    cx.fillRect(24, 16, 4, 8);
+
+    // Backrest (Rounded)
+    cx.fillStyle = '#374151';
+    cx.beginPath();
+    cx.roundRect(6, 4, 20, 14, 4);
+    cx.fill();
+
     return c;
 }
 
 const FURN_SPRITES = {
-    DESK: makeDeskSprite(), BOOKSHELF: makeBookshelfSprite(),
-    PLANT: makePlantSprite(), COOLER: makeCoolerSprite(), CHAIR: makeChairSprite(),
+    DESK_U: makeIsoDesk(DIR.UP), DESK_D: makeIsoDesk(DIR.DOWN),
+    BOOKSHELF: makeIsoBookshelf(), PLANT: makeIsoPlant(),
+    COOLER: makeIsoCooler(), CHAIR: makeChairSprite(),
+    VENDING: makeIsoVending(), ARCADE: makeIsoArcade(),
+    SOFA: makeIsoSofa(), GYM_BENCH: makeIsoGymBench(),
+    TREADMILL: makeIsoTreadmill(), COFFEE: makeIsoCoffee(),
 };
 
 // ─── BFS Pathfinding ───
 
 function isWalkable(col, row, blocked) {
-    if (col < 0 || row < 0 || col >= MAP_COLS || row >= MAP_ROWS) return false;
-    if (tilemap[row * MAP_COLS + col] === TL.VOID) return false;
+    if (col < 0 || row < 0 || col >= MAP_SIZE || row >= MAP_SIZE) return false;
+    if (tilemap[row * MAP_SIZE + col] === TL.VOID) return false;
     return !(blocked && blocked.has(`${col},${row}`));
 }
 
@@ -383,10 +564,10 @@ function findPath(sc, sr, ec, er, blocked) {
 
 function randomWalkable(blocked, curC, curR) {
     const tiles = [];
-    for (let r = 0; r < MAP_ROWS; r++)
-        for (let c = 0; c < MAP_COLS; c++)
+    for (let r = 0; r < MAP_SIZE; r++)
+        for (let c = 0; c < MAP_SIZE; c++)
             if (isWalkable(c, r, blocked)) tiles.push({ col: c, row: r });
-    const far = tiles.filter(t => Math.abs(t.col - curC) + Math.abs(t.row - curR) > 3);
+    const far = tiles.filter(t => Math.abs(t.col - curC) + Math.abs(t.row - curR) > 2);
     const pool = far.length > 0 ? far : tiles;
     return pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : null;
 }
@@ -475,19 +656,12 @@ function updateCharacter(ch, dt) {
             ch.moveProgress += (WALK_SPEED / TILE) * dt;
             if (ch.moveProgress >= 1) {
                 ch.tileCol = next.col; ch.tileRow = next.row;
-                ch.x = ch.tileCol * TILE; ch.y = ch.tileRow * TILE;
                 ch.path.shift(); ch.moveProgress = 0;
-                if (ch.isActive && ch.seatCol != null && !(ch.tileCol === ch.seatCol && ch.tileRow === ch.seatRow)) {
-                    const ub = new Set(blockedTiles);
-                    ub.delete(`${ch.seatCol},${ch.seatRow}`);
-                    ch.path = findPath(ch.tileCol, ch.tileRow, ch.seatCol, ch.seatRow, ub);
-                }
-            } else {
-                const fx = ch.tileCol * TILE, fy = ch.tileRow * TILE;
-                const tx = next.col * TILE, ty = next.row * TILE;
-                ch.x = fx + (tx - fx) * ch.moveProgress;
-                ch.y = fy + (ty - fy) * ch.moveProgress;
             }
+            const fx = ch.tileCol, fy = ch.tileRow;
+            const tx = next ? next.col : fx, ty = next ? next.row : fy;
+            ch.x = fx + (tx - fx) * ch.moveProgress;
+            ch.y = fy + (ty - fy) * ch.moveProgress;
             break;
         }
     }
@@ -498,29 +672,30 @@ function updateCharacter(ch, dt) {
 function initAgents() {
     AGENTS.forEach(a => {
         a.sprites = makeCharSprites(PALETTES[a.paletteIdx]);
-        a.x = a.tileCol * TILE;
-        a.y = a.tileRow * TILE;
+        a.x = a.tileCol;
+        a.y = a.tileRow;
     });
 }
 
 // ─── Particles ───
 
 function spawnParticles(agent, count) {
+    const iso = cartToIso(agent.x, agent.y);
     for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
         const speed = 0.5 + Math.random() * 1.5;
         particles.push({
-            x: agent.x + 16, y: agent.y + 8,
-            vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 1,
-            life: 1, decay: 0.015 + Math.random() * 0.02,
-            color: agent.color, size: 2 + Math.random() * 3,
+            x: iso.x, y: iso.y - 20,
+            vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 2,
+            life: 1, decay: 0.01 + Math.random() * 0.02,
+            color: agent.color, size: 2 + Math.random() * 4,
         });
     }
 }
 
 function updateParticles() {
     particles = particles.filter(p => p.life > 0);
-    particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.04; p.life -= p.decay; });
+    particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.life -= p.decay; });
 }
 
 function drawParticles() {
@@ -538,7 +713,8 @@ function drawConnections() {
     if (activeAgentIdx < 1) return;
     const from = AGENTS[activeAgentIdx - 1], to = AGENTS[activeAgentIdx];
     const t = (globalTick % 60) / 60;
-    const fx = from.x + 16, fy = from.y + 16, tx = to.x + 16, ty = to.y + 16;
+    const fIso = cartToIso(from.x, from.y), tIso = cartToIso(to.x, to.y);
+    const fx = fIso.x, fy = fIso.y - 16, tx = tIso.x, ty = tIso.y - 16;
     ctx.setLineDash([4, 6]);
     ctx.strokeStyle = from.color; ctx.globalAlpha = 0.4; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(fx, fy); ctx.lineTo(tx, ty); ctx.stroke();
@@ -565,7 +741,8 @@ function roundRect(ctx, x, y, w, h, r) {
 
 function drawBubble(ctx, agent) {
     if (!agent.bubble) return;
-    const cx = agent.x + 16, cy = agent.y - 16;
+    const iso = cartToIso(agent.x, agent.y);
+    const cx = iso.x, cy = iso.y - 48;
     const text = agent.bubble;
     ctx.font = 'bold 9px Inter';
     const tw = ctx.measureText(text).width;
@@ -593,8 +770,9 @@ function drawBubble(ctx, agent) {
 // ─── Name Labels ───
 
 function drawNameLabel(ctx, agent) {
-    const cx = agent.x + 16;
-    const footY = agent.fsmState === ST.TYPE ? agent.y + SITTING_OFFSET + 16 : agent.y + 32;
+    const iso = cartToIso(agent.x, agent.y);
+    const cx = iso.x;
+    const footY = iso.y + 4;
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
@@ -623,55 +801,184 @@ function getCharSprite(ch) {
     return wf[1];
 }
 
-function draw() {
-    ctx.fillStyle = '#0a0a14';
+function drawEnvironment() {
+    // 1. Sky Gradient
+    const sky = ctx.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, '#020617');
+    sky.addColorStop(0.5, '#0f172a');
+    sky.addColorStop(1, '#1e293b');
+    ctx.fillStyle = sky;
     ctx.fillRect(0, 0, W, H);
 
-    for (let r = 0; r < MAP_ROWS; r++) {
-        for (let c = 0; c < MAP_COLS; c++) {
-            const t = tilemap[r * MAP_COLS + c];
+    // 2. Distant City Silhouettes
+    const cityY = 320;
+    const bldgs = [
+        { x: -50, w: 120, h: 220, c: '#0f172a' },
+        { x: 100, w: 90, h: 300, c: '#020617' },
+        { x: 220, w: 150, h: 180, c: '#1e293b' },
+        { x: 420, w: 80, h: 260, c: '#0f172a' },
+        { x: 550, w: 140, h: 150, c: '#1e293b' },
+        { x: 750, w: 100, h: 280, c: '#020617' },
+    ];
+
+    bldgs.forEach(b => {
+        ctx.fillStyle = b.c;
+        ctx.fillRect(b.x, cityY - b.h, b.w, b.h);
+
+        // Window Lights
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.15)';
+        for (let r = 0; r < b.h / 20; r++) {
+            for (let col = 0; col < b.w / 15; col++) {
+                if ((r + col + b.x) % 7 === 0) {
+                    ctx.fillRect(b.x + 10 + col * 15, cityY - b.h + 10 + r * 20, 6, 8);
+                }
+            }
+        }
+    });
+
+    // 3. Isometric Ground Plane (City Street level)
+    const gSize = 40;
+    const gOffS = -10;
+    ctx.fillStyle = '#1e1b4b'; // Deep city ground
+
+    // Draw a huge isometric slab
+    const p1 = cartToIso(gOffS, gOffS);
+    const p2 = cartToIso(gSize, gOffS);
+    const p3 = cartToIso(gSize, gSize);
+    const p4 = cartToIso(gOffS, gSize);
+
+    ctx.beginPath();
+    ctx.moveTo(p1.x, p1.y);
+    ctx.lineTo(p2.x + ISO_TILE_W / 2, p2.y + ISO_TILE_H / 2);
+    ctx.lineTo(p3.x, p3.y + ISO_TILE_H);
+    ctx.lineTo(p4.x - ISO_TILE_W / 2, p4.y + ISO_TILE_H / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    // Road Markings (Simple lines)
+    ctx.strokeStyle = '#312e81';
+    ctx.setLineDash([20, 40]);
+    ctx.beginPath();
+    const rStart = cartToIso(14, -10);
+    const rEnd = cartToIso(14, 40);
+    ctx.moveTo(rStart.x, rStart.y); ctx.lineTo(rEnd.x, rEnd.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+}
+
+function draw() {
+    drawEnvironment();
+
+    // Draw Floor
+    for (let r = 0; r < MAP_SIZE; r++) {
+        for (let c = 0; c < MAP_SIZE; c++) {
+            const t = tilemap[r * MAP_SIZE + c];
             if (t === TL.VOID) continue;
+            const iso = cartToIso(c, r);
+
+            // Tile base
             ctx.fillStyle = (c + r) % 2 === 0 ? FLOOR_COL[t] : FLOOR_COL2[t];
-            ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
+            ctx.beginPath();
+            ctx.moveTo(iso.x, iso.y);
+            ctx.lineTo(iso.x + ISO_TILE_W / 2, iso.y + ISO_TILE_H / 2);
+            ctx.lineTo(iso.x, iso.y + ISO_TILE_H);
+            ctx.lineTo(iso.x - ISO_TILE_W / 2, iso.y + ISO_TILE_H / 2);
+            ctx.closePath();
+            ctx.fill();
+
+            // Tile outline (isometric grid)
+            ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
         }
     }
 
-    for (const rm of ROOM_DEFS) {
-        const wc = WALL_COL[rm.floor] || WALL_COL[TL.CORR];
-        const sx = rm.col * TILE, sy = rm.row * TILE;
-        const sw = rm.w * TILE, sh = rm.h * TILE;
-        ctx.fillStyle = wc.top;
-        ctx.fillRect(sx, sy, sw, 4);
-        ctx.fillStyle = wc.side;
-        ctx.fillRect(sx, sy, 3, sh);
-        ctx.fillRect(sx + sw - 3, sy, 3, sh);
-        ctx.fillRect(sx, sy + sh - 3, sw, 3);
+    // Draw Walls
+    for (let i = 0; i < MAP_SIZE; i++) {
+        const wallH = 80;
+        // NW Wall (Left side)
+        const isoL = cartToIso(0, i);
+        ctx.fillStyle = i % 4 === 0 ? '#4a4a55' : '#3a3a45';
+        ctx.beginPath();
+        ctx.moveTo(isoL.x - ISO_TILE_W / 2, isoL.y + ISO_TILE_H / 2);
+        ctx.lineTo(isoL.x - ISO_TILE_W / 2, isoL.y + ISO_TILE_H / 2 - wallH);
+        ctx.lineTo(isoL.x, isoL.y - wallH);
+        ctx.lineTo(isoL.x, isoL.y);
+        ctx.closePath(); ctx.fill();
+
+        // NE Wall (Right side)
+        const isoR = cartToIso(i, 0);
+        ctx.fillStyle = i % 4 === 0 ? '#5a5a65' : '#4a4a55';
+        ctx.beginPath();
+        ctx.moveTo(isoR.x + ISO_TILE_W / 2, isoR.y + ISO_TILE_H / 2);
+        ctx.lineTo(isoR.x + ISO_TILE_W / 2, isoR.y + ISO_TILE_H / 2 - wallH);
+        ctx.lineTo(isoR.x, isoR.y - wallH);
+        ctx.lineTo(isoR.x, isoR.y);
+        ctx.closePath(); ctx.fill();
+
+        // Window Details
+        if (i === 3 || i === 8 || i === 12 || i === 15) {
+            // NW Window
+            ctx.fillStyle = '#1e3a8a';
+            ctx.beginPath();
+            ctx.moveTo(isoL.x - 25, isoL.y - 65);
+            ctx.lineTo(isoL.x - 5, isoL.y - 55);
+            ctx.lineTo(isoL.x - 5, isoL.y - 25);
+            ctx.lineTo(isoL.x - 25, isoL.y - 35);
+            ctx.closePath(); ctx.fill();
+
+            // NE Window
+            ctx.fillStyle = '#1e3a8a';
+            ctx.beginPath();
+            ctx.moveTo(isoR.x + 25, isoR.y - 65);
+            ctx.lineTo(isoR.x + 5, isoR.y - 55);
+            ctx.lineTo(isoR.x + 5, isoR.y - 25);
+            ctx.lineTo(isoR.x + 25, isoR.y - 35);
+            ctx.closePath(); ctx.fill();
+        }
     }
 
     const drawables = [];
     for (const f of furniture) {
         const spr = FURN_SPRITES[f.type];
         if (!spr) continue;
-        drawables.push({ kind: 'f', sprite: spr, x: f.col * TILE, y: f.row * TILE, zY: f.row * TILE + spr.height });
+        const iso = cartToIso(f.col, f.row);
+        drawables.push({
+            kind: 'f', sprite: spr,
+            x: iso.x - spr.width / 2,
+            y: iso.y + ISO_TILE_H - spr.height,
+            zY: f.col + f.row
+        });
     }
     for (const ch of AGENTS) {
         const spr = getCharSprite(ch);
         if (!spr) continue;
-        const sy = ch.fsmState === ST.TYPE ? ch.y - 16 + SITTING_OFFSET : ch.y - 16;
-        drawables.push({ kind: 'c', agent: ch, sprite: spr, x: ch.x, y: sy, zY: ch.y + TILE + 0.5 });
+        const iso = cartToIso(ch.x, ch.y);
+        const sy = ch.fsmState === ST.TYPE ? iso.y - 28 + SITTING_OFFSET : iso.y - 28;
+        drawables.push({
+            kind: 'c', agent: ch, sprite: spr,
+            x: iso.x - 15, y: sy,
+            zY: ch.x + ch.y
+        });
     }
+    // Sort by Z (sum of col and row) for correct isometric overlap
     drawables.sort((a, b) => a.zY - b.zY);
 
     for (const d of drawables) {
         if (d.kind === 'c') {
             const a = d.agent;
+            const iso = cartToIso(a.x, a.y);
             if (a.state === 'working' || a.fsmState === ST.TYPE) {
                 const gr = 20 + Math.sin(globalTick * 0.1) * 5;
-                const grad = ctx.createRadialGradient(a.x + 16, a.y + 24, 0, a.x + 16, a.y + 24, gr);
-                grad.addColorStop(0, a.glowColor + '0.3)');
+                const grad = ctx.createRadialGradient(iso.x, iso.y + 16, 0, iso.x, iso.y + 16, gr);
+                grad.addColorStop(0, a.glowColor + '0.25)');
                 grad.addColorStop(1, a.glowColor + '0)');
                 ctx.fillStyle = grad;
-                ctx.fillRect(a.x + 16 - gr, a.y + 24 - gr, gr * 2, gr * 2);
+                ctx.fillRect(iso.x - gr, iso.y + 16 - gr, gr * 2, gr * 2);
+
+                if (a.state === 'working' && globalTick % 3 === 0) {
+                    spawnParticles(a, 2);
+                }
             }
         }
         ctx.drawImage(d.sprite, d.x, d.y);
@@ -683,15 +990,15 @@ function draw() {
     for (const ch of AGENTS) { if (ch.bubble) drawBubble(ctx, ch); }
 
     if (!pipelineRunning && activeAgentIdx >= AGENTS.length) {
-        ctx.fillStyle = 'rgba(7,7,16,0.75)';
-        roundRect(ctx, W / 2 - 120, H / 2 - 30, 240, 60, 10); ctx.fill();
-        ctx.strokeStyle = '#43e97b'; ctx.lineWidth = 2;
-        roundRect(ctx, W / 2 - 120, H / 2 - 30, 240, 60, 10); ctx.stroke();
+        ctx.fillStyle = 'rgba(7,7,16,0.9)';
+        roundRect(ctx, W / 2 - 130, H / 2 - 35, 260, 70, 10); ctx.fill();
+        ctx.strokeStyle = '#43e97b'; ctx.lineWidth = 3;
+        roundRect(ctx, W / 2 - 130, H / 2 - 35, 260, 70, 10); ctx.stroke();
         ctx.fillStyle = '#43e97b';
         ctx.font = 'bold 14px "Press Start 2P"'; ctx.textAlign = 'center';
-        ctx.fillText('BUILD DONE!', W / 2, H / 2 + 6);
-        ctx.font = '11px Inter'; ctx.fillStyle = '#a0a0c0';
-        ctx.fillText('Ready to ship', W / 2, H / 2 + 24);
+        ctx.fillText('MISSION COMPLETE!', W / 2, H / 2 + 6);
+        ctx.font = '10px "Press Start 2P"'; ctx.fillStyle = '#a0a0c0';
+        ctx.fillText('Ready for Deploy', W / 2, H / 2 + 28);
         ctx.textAlign = 'left';
     }
 }

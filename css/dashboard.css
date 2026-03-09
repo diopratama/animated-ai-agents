@@ -27,7 +27,7 @@
 }
 
 .dash-section-header:hover {
-    background: rgba(108, 99, 255, .06);
+    background: rgba(var(--accent-rgb), .06);
 }
 
 .dash-section-title {
@@ -84,13 +84,13 @@
 }
 
 .pipeline-status-badge.idle {
-    background: rgba(107, 107, 154, .2);
+    background: var(--panel-border);
     color: var(--muted);
 }
 
 .pipeline-status-badge.running {
-    background: rgba(249, 202, 36, .15);
-    color: var(--yellow);
+    background: rgba(var(--accent-rgb), .15);
+    color: var(--accent);
     animation: pulse 1.5s ease-in-out infinite;
 }
 
@@ -134,8 +134,8 @@
 }
 
 .mini-card.mc-working {
-    border-color: var(--yellow);
-    box-shadow: 0 0 8px rgba(249, 202, 36, .15);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px rgba(var(--accent-rgb), .15);
 }
 
 .mini-card.mc-done {
@@ -171,8 +171,8 @@
     flex-shrink: 0;
 }
 
-.mc-badge.b-idle { background: rgba(107,107,154,.2); color: var(--muted); }
-.mc-badge.b-working { background: rgba(249,202,36,.15); color: var(--yellow); }
+.mc-badge.b-idle { background: var(--panel-border); color: var(--muted); }
+.mc-badge.b-working { background: rgba(var(--accent-rgb),.15); color: var(--accent); }
 .mc-badge.b-done { background: rgba(67,233,123,.15); color: var(--green); }
 .mc-badge.b-error { background: rgba(231,76,60,.15); color: var(--red); }
 
@@ -351,7 +351,7 @@
 .deliv-count {
     font-size: 8px;
     font-weight: 700;
-    background: rgba(108,99,255,.15);
+    background: rgba(var(--accent-rgb), .15);
     color: var(--accent);
     padding: 1px 5px;
     border-radius: 3px;

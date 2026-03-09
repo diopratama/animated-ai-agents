@@ -7,15 +7,17 @@ const DIR = { DOWN: 0, LEFT: 1, RIGHT: 2, UP: 3 };
 const TL = { VOID: 0, WOOD: 1, BEIGE: 2, BLUE: 3, CORR: 4 };
 
 const TILE = 32;
-const SITTING_OFFSET = 6;
+const ISO_TILE_W = 64;
+const ISO_TILE_H = 32;
+const SITTING_OFFSET = 4;
 
-const WALK_SPEED = 96;
+const WALK_SPEED = 64; // Adjusted for isometric
 const WALK_FRAME_DUR = 0.15;
 const TYPE_FRAME_DUR = 0.3;
 const WANDER_MIN = 3;
 const WANDER_MAX = 12;
-const WANDER_MOVES_MIN = 3;
-const WANDER_MOVES_MAX = 6;
+const WANDER_MOVES_MIN = 2;
+const WANDER_MOVES_MAX = 4;
 const SEAT_REST_MIN = 20;
 const SEAT_REST_MAX = 45;
 const MAX_DT = 0.1;
@@ -55,7 +57,7 @@ const AGENTS = [
         color: '#a29bfe', glowColor: 'rgba(162,155,254,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 3, tileRow: 3, seatCol: 3, seatRow: 3, seatDir: DIR.UP,
+        tileCol: 2, tileRow: 1, seatCol: 2, seatRow: 1, seatDir: DIR.DOWN,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 5 + Math.random() * 5,
@@ -68,7 +70,7 @@ const AGENTS = [
         color: '#74b9ff', glowColor: 'rgba(116,185,255,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 7, tileRow: 3, seatCol: 7, seatRow: 3, seatDir: DIR.UP,
+        tileCol: 3, tileRow: 1, seatCol: 3, seatRow: 1, seatDir: DIR.DOWN,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 3 + Math.random() * 5,
@@ -81,7 +83,7 @@ const AGENTS = [
         color: '#fd9644', glowColor: 'rgba(253,150,68,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 3, tileRow: 9, seatCol: 3, seatRow: 9, seatDir: DIR.UP,
+        tileCol: 4, tileRow: 1, seatCol: 4, seatRow: 1, seatDir: DIR.DOWN,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 4 + Math.random() * 5,
@@ -94,7 +96,7 @@ const AGENTS = [
         color: '#ff6584', glowColor: 'rgba(255,101,132,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 13, tileRow: 3, seatCol: 13, seatRow: 3, seatDir: DIR.UP,
+        tileCol: 5, tileRow: 1, seatCol: 5, seatRow: 1, seatDir: DIR.DOWN,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 6 + Math.random() * 5,
@@ -107,7 +109,7 @@ const AGENTS = [
         color: '#55efc4', glowColor: 'rgba(85,239,196,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 25, tileRow: 9, seatCol: 25, seatRow: 9, seatDir: DIR.UP,
+        tileCol: 6, tileRow: 1, seatCol: 6, seatRow: 1, seatDir: DIR.DOWN,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 7 + Math.random() * 5,
@@ -120,7 +122,7 @@ const AGENTS = [
         color: '#00cec9', glowColor: 'rgba(0,206,201,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 19, tileRow: 3, seatCol: 19, seatRow: 3, seatDir: DIR.UP,
+        tileCol: 7, tileRow: 1, seatCol: 7, seatRow: 1, seatDir: DIR.DOWN,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 8 + Math.random() * 5,
@@ -133,7 +135,7 @@ const AGENTS = [
         color: '#e74c3c', glowColor: 'rgba(231,76,60,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 7, tileRow: 9, seatCol: 7, seatRow: 9, seatDir: DIR.UP,
+        tileCol: 2, tileRow: 4, seatCol: 2, seatRow: 4, seatDir: DIR.UP,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 9 + Math.random() * 5,
@@ -146,7 +148,7 @@ const AGENTS = [
         color: '#c084fc', glowColor: 'rgba(192,132,252,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 12, tileRow: 9, seatCol: 12, seatRow: 9, seatDir: DIR.UP,
+        tileCol: 3, tileRow: 4, seatCol: 3, seatRow: 4, seatDir: DIR.UP,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 4 + Math.random() * 5,
@@ -159,7 +161,7 @@ const AGENTS = [
         color: '#2dd4bf', glowColor: 'rgba(45,212,191,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 25, tileRow: 3, seatCol: 25, seatRow: 3, seatDir: DIR.UP,
+        tileCol: 4, tileRow: 4, seatCol: 4, seatRow: 4, seatDir: DIR.UP,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 5 + Math.random() * 5,
@@ -172,7 +174,7 @@ const AGENTS = [
         color: '#f472b6', glowColor: 'rgba(244,114,182,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 16, tileRow: 9, seatCol: 16, seatRow: 9, seatDir: DIR.UP,
+        tileCol: 5, tileRow: 4, seatCol: 5, seatRow: 4, seatDir: DIR.UP,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 6 + Math.random() * 5,
@@ -185,7 +187,7 @@ const AGENTS = [
         color: '#fbbf24', glowColor: 'rgba(251,191,36,',
         statusText: 'Idle', state: 'idle', bubble: '',
         fsmState: ST.IDLE, dir: DIR.DOWN,
-        tileCol: 27, tileRow: 3, seatCol: 27, seatRow: 3, seatDir: DIR.UP,
+        tileCol: 6, tileRow: 4, seatCol: 6, seatRow: 4, seatDir: DIR.UP,
         x: 0, y: 0, path: [], moveProgress: 0,
         frame: 0, frameTimer: 0,
         wanderTimer: 7 + Math.random() * 5,
@@ -197,6 +199,7 @@ const AGENTS = [
 
 const DEFAULT_PORTAL_NAME = 'AGENTS CORPORATION';
 let portalName = DEFAULT_PORTAL_NAME;
+let theme = 'dark';
 let pipelineRunning = false;
 let pipelineAgentIds = [];
 let pipelineAwaitingDesign = false;
