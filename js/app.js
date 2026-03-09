@@ -32,11 +32,29 @@ window.addEventListener('hashchange', applyRoute);
 
 // ─── Folder Picker ───
 
+let serverCwd = '';
+
+async function fetchServerCwd() {
+    if (serverCwd) return serverCwd;
+    try {
+        const res = await fetch(`${API_BASE}/api/cwd`);
+        if (res.ok) {
+            const data = await res.json();
+            serverCwd = data.cwd || '';
+        }
+    } catch { /* best effort */ }
+    return serverCwd;
+}
+
 async function openFolderBrowser() {
     if (window.showDirectoryPicker) {
         try {
             const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
-            applyPickedFolderName(dirHandle.name || 'selected-folder');
+            const folderName = dirHandle.name || 'selected-folder';
+            const cwd = await fetchServerCwd();
+            const parentDir = cwd ? cwd.replace(/\/[^/]+$/, '') : '';
+            const fullPath = parentDir ? `${parentDir}/${folderName}` : folderName;
+            applyPickedFolder(fullPath);
             return;
         } catch (err) {
             if (err && err.name === 'AbortError') return;
@@ -46,11 +64,11 @@ async function openFolderBrowser() {
     document.getElementById('folderPicker').click();
 }
 
-function applyPickedFolderName(folderName) {
+function applyPickedFolder(fullPath) {
     const pathInput = document.getElementById('outputDir');
-    pathInput.value = folderName;
-    pathInput.placeholder = `/path/to/${folderName}`;
-    pathInput.title = `Folder selected: "${folderName}"\nBrowser security limits full path access.\nEdit the field to prepend your absolute path (e.g. /Users/you/projects/${folderName})`;
+    pathInput.value = fullPath;
+    pathInput.placeholder = fullPath;
+    pathInput.title = `Output folder: ${fullPath}\nVerify this path is correct — browser cannot detect absolute paths.`;
     toggleClearBtn();
 
     const bar = pathInput.closest('.folder-bar');
@@ -59,14 +77,17 @@ function applyPickedFolderName(folderName) {
     setTimeout(() => { bar.style.borderColor = ''; bar.style.boxShadow = ''; }, 1400);
 }
 
-function onFolderPicked(event) {
+async function onFolderPicked(event) {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
     const firstPath = files[0].webkitRelativePath || '';
     const folderName = firstPath.split('/')[0] || files[0].name;
+    const cwd = await fetchServerCwd();
+    const parentDir = cwd ? cwd.replace(/\/[^/]+$/, '') : '';
+    const fullPath = parentDir ? `${parentDir}/${folderName}` : folderName;
 
-    applyPickedFolderName(folderName);
+    applyPickedFolder(fullPath);
 }
 
 function onPathTyped() { toggleClearBtn(); }
@@ -92,6 +113,7 @@ loadSettings();
 initDashData();
 buildAgentCards();
 onAuthModeChanged();
+initPasteHandler();
 refreshBackendStatus();
 setInterval(refreshBackendStatus, 12000);
 connectSocket();

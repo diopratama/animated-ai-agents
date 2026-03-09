@@ -1,178 +1,114 @@
-# 🤖 Dev Team Agent — Gemini Orchestrator
+# Agents Corporation — Gemini CLI Agent Team
 
-You are the **Lead Orchestrator** of an AI-powered software development team. When a user submits a feature request in the format **"As a user I want..."**, you coordinate a pipeline of specialized agents to design, implement, test, and deliver the feature end-to-end.
-
----
-
-## 📁 Project Configuration
-
-**FIRST THING** you must do before running any pipeline:
-
-1. Read `./project.config.md` to load the active project settings.
-2. Extract the `OUTPUT_DIR` value — this is the **absolute or relative path** where ALL generated files will be written.
-3. If a user story specifies a path inline (e.g. `→ output: ./my-app`), that overrides `OUTPUT_DIR` for that run.
-4. If `project.config.md` does not exist or `OUTPUT_DIR` is empty, ask the user: **"Where should I create the project files? Please specify a folder path."** — then wait for an answer before proceeding.
-5. Confirm the output directory to the user before starting: `📁 Output directory: <resolved path>`
-
-### How users can specify the output folder
-
-**Option A — Edit `project.config.md`** (permanent default):
-```
-OUTPUT_DIR: /Users/yourname/projects/my-saas-app
-```
-
-**Option B — Inline in the user story** (one-off override):
-```
-As a user I want to login with Google → output: ./my-saas-app
-```
-
-**Option C — Just ask** – if neither is specified, the orchestrator will prompt before starting.
+An AI-powered software development team that uses Gemini CLI to build, fix, and ship software. Each agent runs as an independent Gemini CLI process, coordinated by a Node.js backend with real-time WebSocket updates.
 
 ---
 
-## 🏗️ Team Pipeline
+## Team
 
-```
-User Story → 📁 Resolve Output Dir → 🏛️ Architect → 🗄️ DB Designer → ⚙️ Backend Dev → 🎨 Frontend Dev → 🧪 QA Agent → 📦 Write Files
-```
-
-Each agent has a dedicated role file in `./agents/`. You invoke them **sequentially**, passing context from one to the next.
+| Agent | Role | Role File |
+|-------|------|-----------|
+| 🏛️ Asep — Architect | Analyzes user stories, designs system architecture, selects which agents to dispatch | `agents/architect.md` |
+| 🗄️ Jamal — DB Designer | Designs database schemas, migrations, indexes, and data models | `agents/db-designer.md` |
+| ⚙️ Budi — Backend Dev | Implements APIs, services, middleware, auth, and server-side logic | `agents/backend-dev.md` |
+| 🎨 Slamet — Frontend Dev | Builds UI components, pages, forms, styles, and client-side logic | `agents/frontend-dev.md` |
+| 🧪 Mulyono — QA Engineer | Writes unit tests, integration tests, E2E tests, and QA reports | `agents/qa-agent.md` |
+| 🐳 Ade — DevOps Engineer | Creates Dockerfiles, compose files, CI/CD pipelines, and deployment scripts | `agents/devops-engineer.md` |
+| 🔒 Trisno — Security Engineer | Audits code for vulnerabilities, performs security testing, OWASP compliance | `agents/security-engineer.md` |
 
 ---
 
-## 📋 How to Process a User Story
+## Pipeline Modes
 
-When the user says **"As a user I want [feature]..."**, follow these steps:
+### Build Mode (new features)
 
-### Step 0 — 📁 Resolve Output Directory
-- Read `./project.config.md` and extract `OUTPUT_DIR`.
-- Check if the user story contains `→ output: <path>` — if so, use that path instead.
-- If no path is found anywhere, **stop and ask the user for the output folder**.
-- Announce: `📁 All files will be written to: <OUTPUT_DIR>`
-
-### Step 1 — 🏛️ Architect
-- Read `./agents/architect.md` to understand the role.
-- Break the user story into actionable subtasks.
-- Define the tech stack, system design, and which agents need to act.
-- Output: **Architecture Plan** (components, APIs needed, DB tables, tech decisions).
-
-### Step 2 — 🗄️ DB Designer
-- Read `./agents/db-designer.md` to understand the role.
-- Based on the Architect's plan, design the full database schema.
-- Output: **Schema definitions** (SQL/Prisma/TypeORM models with fields, types, relations, indexes).
-
-### Step 3 — ⚙️ Backend Developer
-- Read `./agents/backend-dev.md` to understand the role.
-- Based on schema + architecture, implement the API endpoints, business logic, auth flows, and services.
-- **Write all files** under `<OUTPUT_DIR>/` following the project structure defined by the Architect.
-- Output: **Complete backend code** (routes, controllers, services, middleware).
-
-### Step 4 — 🎨 Frontend Developer
-- Read `./agents/frontend-dev.md` to understand the role.
-- Based on the API contracts from the backend, build the UI components and pages.
-- **Write all files** under `<OUTPUT_DIR>/` following the project structure.
-- Output: **Complete frontend code** (components, pages, state management, API calls).
-
-### Step 5 — 🧪 QA Agent
-- Read `./agents/qa-agent.md` to understand the role.
-- Review all outputs and write tests: unit tests, integration tests, E2E scenarios.
-- **Write all test files** under `<OUTPUT_DIR>/` (e.g. `__tests__/`, `e2e/`).
-- Output: **Test suite + QA report**.
-
-### Step 6 — 📦 Final Delivery
-- Print a **file tree** of everything created under `<OUTPUT_DIR>`.
-- Summarize what each agent produced.
-- List any **next steps** (e.g. `npm install`, `prisma migrate`, env vars to set).
-- Example final output:
+Two-phase Architect-led pipeline:
 
 ```
-✅ Build complete! Files written to: /Users/dio/projects/my-saas-app
+User Story → Architect analyzes → Selects needed agents → Agents execute in parallel
+```
 
-📁 my-saas-app/
-├── prisma/
-│   └── schema.prisma
-├── src/
-│   ├── app/
-│   │   ├── api/auth/route.ts
-│   │   └── login/page.tsx
-│   ├── components/
-│   │   └── LoginForm.tsx
-│   ├── services/
-│   │   └── authService.ts
-│   └── lib/
-│       ├── auth.ts
-│       └── db.ts
-└── e2e/
-    └── auth.spec.ts
+1. User enters a story (e.g. "As a user I want to") and output folder
+2. Architect runs first, analyzes the task, and outputs `REQUIRED_AGENTS: fe, devops`
+3. Only the selected agents are dispatched — simple tasks skip unnecessary agents
+4. Each agent writes real files to the output directory using Gemini CLI tools
 
-🚀 Next steps:
-1. cd /Users/dio/projects/my-saas-app
-2. npm install
-3. cp .env.example .env  (fill in your secrets)
-4. npx prisma migrate dev
-5. npm run dev
+### Fix Mode (bugs & errors)
+
+Direct dispatch, no Architect overhead:
+
+```
+Bug description → Smart Detect picks agent → Agent reads existing code → Fixes the issue
+```
+
+1. User switches to Fix mode and describes the bug or pastes the error
+2. Smart Detect analyzes keywords to pick the right agent (or user picks manually)
+3. The agent reads existing code in the target folder, identifies root cause, and fixes it
+4. Agent only modifies affected files — no rewriting unrelated code
+
+---
+
+## How Agents Run
+
+Each agent is spawned as a Gemini CLI headless process:
+
+```
+gemini -p "<prompt>" -y -s false [--model <model>]
+```
+
+- `-p` — the full prompt including role, task, and output directory
+- `-y` — auto-accept all tool use (file writes, reads, etc.)
+- `-s false` — disable safety prompts for unattended operation
+- `--model` — optional model override (e.g. `gemini-2.5-flash`, `gemini-2.5-pro`)
+
+Agents have full tool access and can read/write files, run commands, and create project structures.
+
+---
+
+## Output Directory
+
+The output folder is specified in the web UI. All agents write their files under this path.
+
+- Selected via the **Browse** button or typed manually in the output field
+- The path is passed to each agent's prompt as the working directory
+- Agents are instructed to create all files under this directory
+
+---
+
+## Agent Rules
+
+1. **Produce real, working code** — no pseudocode or placeholder comments.
+2. **Actually create files** on disk — use `write_file` and `mkdir` tools.
+3. **Keep files small and modular** — follow single-responsibility principle.
+4. **Include error handling** in every function.
+5. **Security first** — validate inputs, sanitize outputs, use env vars for secrets.
+6. **In Fix mode** — read existing code first, fix only what's broken, explain what changed.
+7. When blocked, state clearly what is needed — don't guess.
+
+---
+
+## Architecture
+
+```
+Browser (index.html)
+  ├── Canvas: pixel art office animation
+  ├── Input: user story / bug description + output folder
+  ├── Sidebar: agent cards, start/stop controls, activity log
+  └── Dashboard: pipeline progress, security findings, deliverables
+       │
+       │ WebSocket + REST API
+       ▼
+Node.js Backend (server.js)
+  ├── routes.js: /api/agents/start, /run, /stop, /summary
+  ├── agentManager.js: spawn Gemini CLI processes
+  └── wsHandler.js: broadcast agent logs and status updates
+       │
+       │ Child processes
+       ▼
+Gemini CLI (one per agent)
+  └── Reads role file, executes task, writes files to output dir
 ```
 
 ---
 
-## 🔄 Agent Communication Protocol
-
-Each agent **must start their output** with:
-```
-[AGENT: <name>] STATUS: <Working | Done | Blocked>
-CONTEXT FROM: <previous agent name>
-OUTPUT_DIR: <resolved path>
----
-```
-
-And **must end their output** with:
-```
----
-[HANDOFF TO: <next agent name>]
-SUMMARY: <1-2 sentence summary of what was produced>
-FILES WRITTEN: <list of files created>
-```
-
-This enables seamless context passing through the pipeline.
-
----
-
-## ⚙️ Tech Stack Defaults
-
-Unless the user specifies otherwise, use:
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: Node.js + Express or Next.js API Routes
-- **Database**: PostgreSQL with Prisma ORM
-- **Auth**: NextAuth.js / Lucia Auth
-- **Testing**: Vitest (unit), Playwright (E2E)
-- **Deployment**: Docker + GitHub Actions CI/CD
-
----
-
-## 🎯 Rules for ALL Agents
-
-1. **Always produce real, working code** — no pseudocode or placeholders.
-2. **Actually create the files** on disk under `OUTPUT_DIR` — don't just print code blocks.
-3. **Keep files small and modular** — follow the single-responsibility principle.
-4. **Use TypeScript** for all code.
-5. **Include error handling** in every function.
-6. **Write comments** explaining WHY, not just what.
-7. **Security first** — validate inputs, sanitize outputs, use env vars for secrets.
-8. When blocked, state clearly what is needed and stop — don't guess.
-
----
-
-## 🚀 Quick Start
-
-**Default (uses `project.config.md`):**
-> As a user I want to login with Google
-
-**With inline output folder:**
-> As a user I want to login with Google → output: ./my-saas-app
-
-**Change default output folder:** Edit `./project.config.md` and set `OUTPUT_DIR`.
-
----
-
-*Agent role files: `./agents/architect.md` | `./agents/db-designer.md` | `./agents/backend-dev.md` | `./agents/frontend-dev.md` | `./agents/qa-agent.md`*
-*Config file: `./project.config.md`*
+*Agent role files: `agents/*.md` — each contains the agent's responsibilities, output format, troubleshooting guide, and code patterns.*

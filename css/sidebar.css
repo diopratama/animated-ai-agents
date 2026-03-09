@@ -22,6 +22,9 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    overflow-y: auto;
+    flex-shrink: 1;
+    min-height: 0;
 }
 
 .agent-card {
@@ -176,6 +179,7 @@
 
 .log-area {
     flex: 1;
+    min-height: 180px;
     overflow-y: auto;
     padding: 10px 14px;
     display: flex;
@@ -210,6 +214,10 @@
 }
 
 .tag-arch { color: var(--purple); }
+.tag-uxr { color: var(--lavender); }
+.tag-uxa { color: var(--teal); }
+.tag-uid { color: var(--pink); }
+.tag-ipe { color: var(--amber); }
 .tag-db { color: var(--blue); }
 .tag-be { color: var(--orange); }
 .tag-fe { color: var(--accent2); }

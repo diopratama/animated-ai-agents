@@ -30,6 +30,10 @@ const PALETTES = [
     { skin: '#DEB887', hair: '#0a3622', shirt: '#55efc4', pants: '#064a2d', shoes: '#333' },
     { skin: '#FFCC99', hair: '#1a1a3a', shirt: '#00cec9', pants: '#2d3436', shoes: '#222' },
     { skin: '#DEB887', hair: '#4a1010', shirt: '#e74c3c', pants: '#1a1a2e', shoes: '#333' },
+    { skin: '#FFCC99', hair: '#6a0dad', shirt: '#c084fc', pants: '#3b0764', shoes: '#222' },
+    { skin: '#DEB887', hair: '#1a1a3a', shirt: '#2dd4bf', pants: '#134e4a', shoes: '#333' },
+    { skin: '#FFCC99', hair: '#b91c1c', shirt: '#f472b6', pants: '#831843', shoes: '#222' },
+    { skin: '#DEB887', hair: '#854d0e', shirt: '#fbbf24', pants: '#451a03', shoes: '#333' },
 ];
 
 function randRange(a, b) { return a + Math.random() * (b - a); }
@@ -137,11 +141,65 @@ const AGENTS = [
         seatTimer: 0, isActive: false, returningToSeat: false,
         sprites: null, paletteIdx: 6,
     },
+    {
+        id: 'uxr', name: 'UX Researcher', charName: 'Dewi', emoji: '🔬',
+        color: '#c084fc', glowColor: 'rgba(192,132,252,',
+        statusText: 'Idle', state: 'idle', bubble: '',
+        fsmState: ST.IDLE, dir: DIR.DOWN,
+        tileCol: 12, tileRow: 9, seatCol: 12, seatRow: 9, seatDir: DIR.UP,
+        x: 0, y: 0, path: [], moveProgress: 0,
+        frame: 0, frameTimer: 0,
+        wanderTimer: 4 + Math.random() * 5,
+        wanderCount: 0, wanderLimit: randInt(3, 6),
+        seatTimer: 0, isActive: false, returningToSeat: false,
+        sprites: null, paletteIdx: 7,
+    },
+    {
+        id: 'uxa', name: 'UX Architect', charName: 'Rizki', emoji: '🏗️',
+        color: '#2dd4bf', glowColor: 'rgba(45,212,191,',
+        statusText: 'Idle', state: 'idle', bubble: '',
+        fsmState: ST.IDLE, dir: DIR.DOWN,
+        tileCol: 25, tileRow: 3, seatCol: 25, seatRow: 3, seatDir: DIR.UP,
+        x: 0, y: 0, path: [], moveProgress: 0,
+        frame: 0, frameTimer: 0,
+        wanderTimer: 5 + Math.random() * 5,
+        wanderCount: 0, wanderLimit: randInt(3, 6),
+        seatTimer: 0, isActive: false, returningToSeat: false,
+        sprites: null, paletteIdx: 8,
+    },
+    {
+        id: 'uid', name: 'UI Designer', charName: 'Putri', emoji: '🖌️',
+        color: '#f472b6', glowColor: 'rgba(244,114,182,',
+        statusText: 'Idle', state: 'idle', bubble: '',
+        fsmState: ST.IDLE, dir: DIR.DOWN,
+        tileCol: 16, tileRow: 9, seatCol: 16, seatRow: 9, seatDir: DIR.UP,
+        x: 0, y: 0, path: [], moveProgress: 0,
+        frame: 0, frameTimer: 0,
+        wanderTimer: 6 + Math.random() * 5,
+        wanderCount: 0, wanderLimit: randInt(3, 6),
+        seatTimer: 0, isActive: false, returningToSeat: false,
+        sprites: null, paletteIdx: 9,
+    },
+    {
+        id: 'ipe', name: 'Image Prompt Engineer', charName: 'Fajar', emoji: '📸',
+        color: '#fbbf24', glowColor: 'rgba(251,191,36,',
+        statusText: 'Idle', state: 'idle', bubble: '',
+        fsmState: ST.IDLE, dir: DIR.DOWN,
+        tileCol: 27, tileRow: 3, seatCol: 27, seatRow: 3, seatDir: DIR.UP,
+        x: 0, y: 0, path: [], moveProgress: 0,
+        frame: 0, frameTimer: 0,
+        wanderTimer: 7 + Math.random() * 5,
+        wanderCount: 0, wanderLimit: randInt(3, 6),
+        seatTimer: 0, isActive: false, returningToSeat: false,
+        sprites: null, paletteIdx: 10,
+    },
 ];
 
 const DEFAULT_PORTAL_NAME = 'AGENTS CORPORATION';
 let portalName = DEFAULT_PORTAL_NAME;
 let pipelineRunning = false;
+let pipelineAgentIds = [];
+let pipelineAwaitingDesign = false;
 let activeAgentIdx = -1;
 let globalTick = 0;
 let particles = [];

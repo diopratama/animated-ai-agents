@@ -5,7 +5,8 @@
 const SETTINGS_KEY = 'pixel-agents-settings';
 
 const DEFAULT_NAMES = {
-    arch: 'Asep', db: 'Jamal', be: 'Budi', fe: 'Slamet',
+    arch: 'Asep', uxr: 'Dewi', uxa: 'Rizki', uid: 'Putri', ipe: 'Fajar',
+    db: 'Jamal', be: 'Budi', fe: 'Slamet',
     qa: 'Mulyono', devops: 'Ade', sec: 'Trisno',
 };
 

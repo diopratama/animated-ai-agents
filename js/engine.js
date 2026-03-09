@@ -35,6 +35,7 @@ const ROOM_DEFS = [
     { col: 17, row: 1, w: 5, h: 5, floor: TL.BEIGE },
     { col: 23, row: 1, w: 6, h: 5, floor: TL.BEIGE },
     { col: 23, row: 7, w: 6, h: 4, floor: TL.BLUE  },
+    { col: 10, row: 7, w: 8, h: 4, floor: TL.BEIGE },
 ];
 
 function createTilemap() {
@@ -76,12 +77,18 @@ const furniture = [
     { type: 'DESK', col: 18, row: 2 }, { type: 'CHAIR', col: 19, row: 3 },
     { type: 'PLANT', col: 17, row: 1 }, { type: 'PLANT', col: 21, row: 1 },
 
-    { type: 'COOLER', col: 25, row: 2 },
+    { type: 'DESK', col: 24, row: 2 }, { type: 'CHAIR', col: 25, row: 3 },
+    { type: 'DESK', col: 26, row: 2 }, { type: 'CHAIR', col: 27, row: 3 },
     { type: 'PLANT', col: 23, row: 1 }, { type: 'PLANT', col: 28, row: 1 },
 
     { type: 'DESK', col: 24, row: 8 }, { type: 'CHAIR', col: 25, row: 9 },
     { type: 'BOOKSHELF', col: 23, row: 7 }, { type: 'BOOKSHELF', col: 28, row: 7 },
     { type: 'PLANT', col: 23, row: 10 }, { type: 'PLANT', col: 28, row: 10 },
+
+    { type: 'DESK', col: 11, row: 8 }, { type: 'CHAIR', col: 12, row: 9 },
+    { type: 'DESK', col: 15, row: 8 }, { type: 'CHAIR', col: 16, row: 9 },
+    { type: 'BOOKSHELF', col: 10, row: 7 }, { type: 'BOOKSHELF', col: 17, row: 7 },
+    { type: 'PLANT', col: 10, row: 10 }, { type: 'PLANT', col: 17, row: 10 },
 ];
 
 const blockedTiles = new Set();

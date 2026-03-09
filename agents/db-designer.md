@@ -79,6 +79,44 @@ SUMMARY: [1-2 sentence summary of schema output]
 
 ---
 
+## Bug Fix & Troubleshooting Mode
+
+When dispatched in **Fix mode**, your priority shifts from designing to diagnosing and repairing database issues.
+
+### Troubleshooting Process
+1. **Read first** — examine the existing schema, migrations, and seed files in the target directory.
+2. **Understand** — parse the error message to identify the exact database issue.
+3. **Root cause** — trace the problem: schema definition → migration → query → data.
+4. **Minimal fix** — change only the affected schema, migration, or query. Do not redesign.
+5. **Verify** — confirm the fix resolves the issue without data loss.
+
+### Common Database Issues to Check
+- **Migration failures**: Conflicting migrations, missing columns, type mismatches.
+- **Foreign key errors**: Missing referenced records, incorrect cascade rules, circular references.
+- **Query errors**: Wrong column names, missing joins, type casting issues.
+- **Connection issues**: Incorrect DATABASE_URL, wrong port, SSL configuration.
+- **Data integrity**: Duplicate unique values, null constraint violations, orphaned records.
+- **Performance**: Missing indexes, N+1 queries, full table scans on large tables.
+
+### Fix Output Format
+```
+[AGENT: DB Designer] STATUS: Fixed
+---
+## Root Cause
+[What caused the database issue]
+
+## Changes Made
+- [File]: [What was changed and why]
+
+## Migration Notes
+[Any migration steps needed to apply the fix]
+
+## How to Verify
+[Query or command to confirm the fix]
+```
+
+---
+
 ## Schema Design Principles
 
 - **Never store passwords in plain text** — always use hashed fields (e.g., `passwordHash String`).

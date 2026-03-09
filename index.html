@@ -11,7 +11,7 @@
 
     <!-- ─── Header ─── -->
     <header>
-        <span class="logo" id="portalNameDisplay">⚡ PIXEL AGENTS</span>
+        <span class="logo" id="portalNameDisplay">⚡ AGENTS CORPORATION</span>
         <div class="tabs">
             <div class="tab active" onclick="switchTab('agents')">AGENTS</div>
             <div class="tab" onclick="switchTab('layout')">LAYOUT</div>
@@ -30,12 +30,30 @@
             <canvas id="pixelCanvas" width="960" height="400"></canvas>
 
             <div class="story-input-wrap">
-                <span class="story-label">▶ USER STORY</span>
+                <div class="mode-row">
+                    <select id="pipelineMode" class="mode-select" onchange="onPipelineModeChanged()">
+                        <option value="build">▶ BUILD</option>
+                        <option value="fix">🔧 FIX</option>
+                    </select>
+                    <span class="story-label" id="inputLabel">USER STORY</span>
+                </div>
                 <div class="story-row">
-                    <input id="storyInput" class="story-input" type="text"
-                        placeholder="As a user I want to login with Google..."
-                        value="As a user I want to login with Google" />
-                    <button class="run-btn" id="runBtn" onclick="startPipeline()">▶ RUN ALL</button>
+                    <div class="story-input-area">
+                        <textarea id="storyInput" class="story-input" rows="2"
+                            placeholder="As a user I want to..."
+                            oninput="onStoryInputChanged()">As a user I want to</textarea>
+                        <div class="paste-zone" id="pasteZone" style="display:none">
+                            <div class="paste-previews" id="pastePreviews"></div>
+                        </div>
+                    </div>
+                    <div class="story-actions">
+                        <div class="fix-agent-wrap" id="fixAgentWrap" style="display:none">
+                            <select id="fixAgent" class="fix-agent-select" onchange="onFixAgentManualChange()"></select>
+                            <span class="fix-auto-tag" id="fixAutoTag">🎯 auto</span>
+                        </div>
+                        <button class="run-btn" id="runBtn" onclick="startPipeline()">▶ RUN ALL</button>
+                        <button class="run-btn stop-pipeline-btn" id="stopPipelineBtn" onclick="stopPipeline()" style="display:none">⏹ STOP</button>
+                    </div>
                 </div>
                 <!-- Hidden folder picker input -->
                 <input type="file" id="folderPicker" webkitdirectory style="display:none"
@@ -146,7 +164,7 @@
                 <div class="setting-field">
                     <span class="sf-emoji">⚡</span>
                     <span class="sf-label">Portal Name</span>
-                    <input type="text" id="portalNameInput" value="PIXEL AGENTS" placeholder="PIXEL AGENTS" spellcheck="false" />
+                    <input type="text" id="portalNameInput" value="AGENTS CORPORATION" placeholder="AGENTS CORPORATION" spellcheck="false" />
                 </div>
             </div>
         </div>

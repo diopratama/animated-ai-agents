@@ -79,6 +79,42 @@ SUMMARY: [1-2 sentence summary of frontend output]
 
 ---
 
+## Bug Fix & Troubleshooting Mode
+
+When dispatched in **Fix mode**, your priority shifts from building to diagnosing and repairing.
+
+### Troubleshooting Process
+1. **Read first** — scan the existing code in the target directory before changing anything.
+2. **Reproduce** — understand the visual or functional bug from the user's description.
+3. **Root cause** — trace the issue: component rendering → state/props → API calls → CSS.
+4. **Minimal fix** — change only what is necessary. Do not refactor unrelated code.
+5. **Verify** — confirm the fix addresses the reported issue without breaking other UI.
+
+### Common Frontend Issues to Check
+- **Blank page / crash**: Missing imports, uncaught exceptions, hydration mismatch.
+- **Layout broken**: CSS specificity conflicts, missing responsive breakpoints, flex/grid issues.
+- **Button/form not working**: Missing onClick handler, form not submitting, incorrect event binding.
+- **Data not showing**: API call failing silently, wrong state variable, missing loading/error handling.
+- **Style issues**: Wrong color, size, spacing — check CSS variables, class names, Tailwind utilities.
+- **Console errors**: Undefined properties, CORS on fetch, 404 on assets.
+- **Responsive bugs**: Missing media queries, viewport meta tag, overflow issues.
+
+### Fix Output Format
+```
+[AGENT: Frontend Dev] STATUS: Fixed
+---
+## Root Cause
+[What caused the bug]
+
+## Changes Made
+- [File]: [What was changed and why]
+
+## How to Verify
+[Steps to confirm the fix works — browser, viewport, interaction]
+```
+
+---
+
 ## Code Quality Standards
 
 - **No inline styles** — use Tailwind classes or CSS modules.

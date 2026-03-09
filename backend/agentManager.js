@@ -12,6 +12,10 @@ const AUTH_MODES = new Set(["api_key", "google_login"]);
 
 export const AGENT_DEFS = {
   arch: { name: "Architect", roleFile: "agents/architect.md" },
+  uxr: { name: "UX Researcher", roleFile: "agents/ux-researcher.md" },
+  uxa: { name: "UX Architect", roleFile: "agents/ux-architect.md" },
+  uid: { name: "UI Designer", roleFile: "agents/ui-designer.md" },
+  ipe: { name: "Image Prompt Engineer", roleFile: "agents/image-prompt-engineer.md" },
   db: { name: "DB Designer", roleFile: "agents/db-designer.md" },
   be: { name: "Backend Dev", roleFile: "agents/backend-dev.md" },
   fe: { name: "Frontend Dev", roleFile: "agents/frontend-dev.md" },
@@ -115,10 +119,22 @@ export function resolveAuth(authMode, apiKey) {
 
 export function agentSnapshot(agentId) {
   const def = AGENT_DEFS[agentId];
+  const entry = runningAgents.get(agentId);
+  let status = "idle";
+  if (entry) {
+    if (entry.child && !entry.child.killed && entry.child.exitCode === null) {
+      status = "working";
+    } else if (entry.child && entry.child.exitCode !== null) {
+      status = "done";
+    } else {
+      status = "ready";
+    }
+  }
   return {
     id: agentId,
     name: def.name,
     running: runningAgents.has(agentId),
+    status,
   };
 }
 

@@ -30,7 +30,7 @@ export function createRoutes(projectRoot) {
       `You are running as ${def.name}.`,
       `Project root: ${projectRoot}`,
       `Write all output files under: ${outputDir}`,
-      `User story: ${story || "As a user I want to login with Google"}`,
+      `User story: ${story || "As a user I want to"}`,
       "",
       "--- Role instructions ---",
       roleContent,
@@ -48,6 +48,73 @@ export function createRoutes(projectRoot) {
       auth,
       runningAgents: [...Object.keys(AGENT_DEFS)].map(agentSnapshot),
     });
+  });
+
+  router.get("/api/cwd", (_req, res) => {
+    res.json({ cwd: projectRoot });
+  });
+
+  router.get("/api/summary", (req, res) => {
+    const dir = req.query.dir
+      ? resolveOutputDir(req.query.dir, projectRoot)
+      : projectRoot;
+
+    if (!fs.existsSync(dir)) {
+      return res.status(404).json({ ok: false, error: "Directory not found." });
+    }
+
+    const summary = { ok: true, dir, readme: null, run: [], files: [] };
+
+    const readmeNames = ["README.md", "readme.md", "README.txt", "README"];
+    for (const name of readmeNames) {
+      const p = path.join(dir, name);
+      if (fs.existsSync(p)) {
+        const content = fs.readFileSync(p, "utf8").trim();
+        summary.readme = content.length > 3000
+          ? content.substring(0, 3000) + "\n... (truncated)"
+          : content;
+        break;
+      }
+    }
+
+    const runHints = [];
+    const makefile = path.join(dir, "Makefile");
+    if (fs.existsSync(makefile)) {
+      const content = fs.readFileSync(makefile, "utf8");
+      const targets = [...content.matchAll(/^([a-zA-Z_][\w-]*):/gm)].map(m => m[1]);
+      if (targets.length > 0) runHints.push({ type: "make", targets });
+    }
+
+    const pkgJson = path.join(dir, "package.json");
+    if (fs.existsSync(pkgJson)) {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(pkgJson, "utf8"));
+        if (pkg.scripts) runHints.push({ type: "npm", scripts: Object.keys(pkg.scripts) });
+      } catch { /* malformed */ }
+    }
+
+    const composePaths = ["docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml"];
+    for (const name of composePaths) {
+      if (fs.existsSync(path.join(dir, name))) {
+        runHints.push({ type: "docker-compose", file: name });
+        break;
+      }
+    }
+
+    if (fs.existsSync(path.join(dir, "Dockerfile"))) {
+      runHints.push({ type: "dockerfile" });
+    }
+
+    summary.run = runHints;
+
+    try {
+      const entries = fs.readdirSync(dir, { withFileTypes: true });
+      summary.files = entries
+        .map(e => ({ name: e.name, isDir: e.isDirectory() }))
+        .sort((a, b) => (b.isDir - a.isDir) || a.name.localeCompare(b.name));
+    } catch { /* ignore */ }
+
+    return res.json(summary);
   });
 
   router.get("/api/agents", (_req, res) => {

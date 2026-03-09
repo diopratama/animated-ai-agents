@@ -33,6 +33,8 @@ function resetDashboard() {
     deliverables.clear();
     pipelineStartTime = Date.now();
     pipelineElapsed = 0;
+    pipelineAgentIds = [];
+    pipelineAwaitingDesign = false;
     document.getElementById('secSection').style.display = 'none';
     document.getElementById('svcSection').style.display = 'none';
     renderDashboard();
@@ -171,7 +173,9 @@ function renderDashboard() {
 
 function renderPipelineBar() {
     const el = document.getElementById('pipelineBar');
-    const agents = AGENTS;
+    const agents = pipelineAgentIds.length > 0
+        ? AGENTS.filter(a => pipelineAgentIds.includes(a.id))
+        : AGENTS;
     const doneCount = agents.filter(a => dashData[a.id]?.status === 'done').length;
     const errorCount = agents.filter(a => dashData[a.id]?.status === 'error').length;
     const stoppedCount = agents.filter(a => dashData[a.id]?.status === 'stopped').length;

@@ -3,6 +3,8 @@
     display: flex;
     flex: 1;
     gap: 0;
+    min-height: 0;
+    overflow: hidden;
 }
 
 /* ── Canvas Area ── */
@@ -15,6 +17,7 @@
     padding: 20px;
     position: relative;
     min-width: 0;
+    overflow-y: auto;
 }
 
 #pixelCanvas {
@@ -33,12 +36,85 @@
     margin-top: 16px;
 }
 
+.mode-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.mode-select {
+    background: var(--panel);
+    border: 1.5px solid var(--panel-border);
+    color: var(--text);
+    border-radius: 6px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    padding: 5px 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .2s;
+}
+
+.mode-select:focus {
+    border-color: var(--accent);
+}
+
 .story-label {
     font-family: 'Press Start 2P', monospace;
     font-size: 8px;
     color: var(--muted);
-    margin-bottom: 8px;
     display: block;
+}
+
+.fix-agent-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.fix-agent-select {
+    background: var(--panel);
+    border: 2px solid var(--panel-border);
+    color: var(--text);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    padding: 10px 10px;
+    outline: none;
+    cursor: pointer;
+    min-width: 150px;
+    transition: border-color .2s;
+}
+
+.fix-agent-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(108, 99, 255, .2);
+}
+
+.fix-auto-tag {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--green);
+    background: rgba(67, 233, 123, .12);
+    border: 1px solid rgba(67, 233, 123, .3);
+    border-radius: 4px;
+    padding: 3px 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.fix-auto-tag.manual {
+    color: var(--muted);
+    background: rgba(107, 107, 154, .12);
+    border-color: rgba(107, 107, 154, .3);
+}
+
+.fix-auto-tag.waiting {
+    color: var(--yellow);
+    background: rgba(249, 202, 36, .12);
+    border-color: rgba(249, 202, 36, .3);
 }
 
 .story-row {
@@ -46,8 +122,16 @@
     gap: 8px;
 }
 
-.story-input {
+.story-input-area {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.story-input {
+    width: 100%;
     background: var(--panel);
     border: 2px solid var(--panel-border);
     color: var(--text);
@@ -56,6 +140,9 @@
     font-size: 13px;
     border-radius: 6px;
     outline: none;
+    resize: vertical;
+    min-height: 42px;
+    max-height: 120px;
     transition: border-color .2s, box-shadow .2s;
 }
 
@@ -66,6 +153,57 @@
 
 .story-input::placeholder {
     color: var(--muted);
+}
+
+.story-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.paste-zone {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.paste-previews {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.paste-thumb {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    border: 1.5px solid var(--panel-border);
+    overflow: hidden;
+}
+
+.paste-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.paste-thumb-remove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(0,0,0,.7);
+    color: var(--red);
+    border: none;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0;
 }
 
 .run-btn {
@@ -93,6 +231,15 @@
 .run-btn:disabled {
     opacity: .5;
     cursor: not-allowed;
+}
+
+.stop-pipeline-btn {
+    background: var(--red);
+}
+
+.stop-pipeline-btn:hover {
+    background: #c0392b;
+    box-shadow: 0 0 20px rgba(231, 76, 60, .5);
 }
 
 /* ── Folder Picker ── */

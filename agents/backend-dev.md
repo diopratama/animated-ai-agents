@@ -84,6 +84,42 @@ SUMMARY: [1-2 sentence summary of backend output]
 
 ---
 
+## Bug Fix & Troubleshooting Mode
+
+When dispatched in **Fix mode**, your priority shifts from building to diagnosing and repairing.
+
+### Troubleshooting Process
+1. **Read first** — scan the existing codebase in the target directory before changing anything.
+2. **Reproduce** — understand the exact error or unexpected behavior from the user's description.
+3. **Root cause** — trace the issue through the call stack: route → controller → service → data layer.
+4. **Minimal fix** — change only what is necessary. Do not refactor unrelated code.
+5. **Verify** — confirm the fix addresses the reported issue without introducing regressions.
+
+### Common Backend Issues to Check
+- **500 errors**: Unhandled exceptions, missing null checks, incorrect async/await.
+- **404 errors**: Wrong route path, missing route registration, incorrect HTTP method.
+- **CORS issues**: Missing or incorrect CORS middleware configuration.
+- **Auth failures**: Expired tokens, incorrect secret, missing middleware on route.
+- **Database errors**: Connection string issues, missing migrations, type mismatches.
+- **Timeout/hang**: Unresolved promises, missing `next()` in middleware, circular dependencies.
+- **Environment issues**: Missing env vars, wrong port, incorrect file paths.
+
+### Fix Output Format
+```
+[AGENT: Backend Dev] STATUS: Fixed
+---
+## Root Cause
+[What caused the bug]
+
+## Changes Made
+- [File]: [What was changed and why]
+
+## How to Verify
+[Steps to confirm the fix works]
+```
+
+---
+
 ## Code Quality Standards
 
 - **Every function must have a return type** — no implicit `any`.
