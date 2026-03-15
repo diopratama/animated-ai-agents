@@ -34,10 +34,10 @@ function cartToIso(col, row) {
 // ─── Tilemap ───
 
 const ROOM_DEFS = [
-    { col: 0, row: 0, w: 10, h: 10, floor: TL.BEIGE }, // Main Office
-    { col: 10, row: 0, w: 6, h: 7, floor: TL.BLUE },   // Gym
-    { col: 10, row: 7, w: 6, h: 9, floor: TL.WOOD },   // Pantry/Cafe
-    { col: 0, row: 10, w: 10, h: 6, floor: TL.CORR },  // Gaming/Lounge
+    { col: 0, row: 0, w: 10, h: 10, floor: TL.BEIGE, name: 'WORKING AREA', wallSide: 'NW', wallIdx: 4 },
+    { col: 10, row: 0, w: 6, h: 7, floor: TL.BLUE, name: 'GYM', wallSide: 'NE', wallIdx: 12 },
+    { col: 10, row: 7, w: 6, h: 9, floor: TL.WOOD, name: 'PANTRY', wallSide: 'NE', wallIdx: 15 },
+    { col: 0, row: 10, w: 10, h: 6, floor: TL.CORR, name: 'GAMING LOUNGE', wallSide: 'NW', wallIdx: 13 },
 ];
 
 function createTilemap() {
@@ -788,6 +788,80 @@ function drawNameLabel(ctx, agent) {
     ctx.textAlign = 'left';
 }
 
+function drawRoomLabels(ctx) {
+    ROOM_DEFS.forEach(r => {
+        if (!r.wallSide) return;
+
+        const iso = r.wallSide === 'NW' ? cartToIso(0, r.wallIdx) : cartToIso(r.wallIdx, 0);
+        const wallH = 80;
+        const signH = 14;
+        const signW = 40;
+        const groundY = iso.y + ISO_TILE_H / 2;
+        const signBaseY = groundY - 50; // Height on wall
+
+        ctx.save();
+        
+        // Isometric wall vectors: 
+        // NW wall (Left) goes along (-32, -16) from the bottom-left point
+        // NE wall (Right) goes along (32, -16) from the bottom-right point
+        
+        ctx.font = 'bold 7px "Press Start 2P"';
+        const tw = ctx.measureText(r.name).width;
+        const bw = tw + 10;
+        const bh = 14;
+
+        if (r.wallSide === 'NW') {
+            const x = iso.x - 20, y = signBaseY;
+            // Frame
+            ctx.fillStyle = '#9ca3af';
+            ctx.beginPath();
+            ctx.moveTo(x + 1, y - 1);
+            ctx.lineTo(x - bw / 2 - 1, y + bh / 4 - 1);
+            ctx.lineTo(x - bw / 2 - 1, y + bh + bh / 4 + 1);
+            ctx.lineTo(x + 1, y + bh + 1);
+            ctx.closePath(); ctx.fill();
+
+            // Plate
+            ctx.fillStyle = '#f3f4f6';
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x - bw / 2, y + bh / 4);
+            ctx.lineTo(x - bw / 2, y + bh + bh / 4);
+            ctx.lineTo(x, y + bh);
+            ctx.closePath(); ctx.fill();
+
+            ctx.fillStyle = '#111827';
+            ctx.textAlign = 'center';
+            ctx.fillText(r.name, x - bw / 4, y + bh / 2 + 3);
+        } else {
+            const x = iso.x + 20, y = signBaseY;
+            // Frame
+            ctx.fillStyle = '#9ca3af';
+            ctx.beginPath();
+            ctx.moveTo(x - 1, y - 1);
+            ctx.lineTo(x + bw / 2 + 1, y + bh / 4 - 1);
+            ctx.lineTo(x + bw / 2 + 1, y + bh + bh / 4 + 1);
+            ctx.lineTo(x - 1, y + bh + 1);
+            ctx.closePath(); ctx.fill();
+
+            // Plate
+            ctx.fillStyle = '#f3f4f6';
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + bw / 2, y + bh / 4);
+            ctx.lineTo(x + bw / 2, y + bh + bh / 4);
+            ctx.lineTo(x, y + bh);
+            ctx.closePath(); ctx.fill();
+
+            ctx.fillStyle = '#111827';
+            ctx.textAlign = 'center';
+            ctx.fillText(r.name, x + bw / 4, y + bh / 2 + 3);
+        }
+        
+        ctx.restore();
+    });
+}
+
 // ─── Rendering ───
 
 function getCharSprite(ch) {
@@ -985,6 +1059,7 @@ function draw() {
     }
 
     if (pipelineRunning) drawConnections();
+    drawRoomLabels(ctx);
     drawParticles();
     for (const ch of AGENTS) drawNameLabel(ctx, ch);
     for (const ch of AGENTS) { if (ch.bubble) drawBubble(ctx, ch); }

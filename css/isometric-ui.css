@@ -18,7 +18,7 @@
 /* CRT Scanline Effect Overlay */
 .canvas-wrap {
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .canvas-wrap::after {
